@@ -16,4 +16,15 @@ class AppColor {
   static const Color iconBackground = Color(0xFFEFF3FF);
 
   static final BorderRadius borderRadius = BorderRadius.circular(12);
+
+  static const Color white = Colors.white;
+
+  static const Color lightBlueBackground = Color(0xFFE8F0FF);
+  static const Color lightPurpleBackground = Color(0xFFF3E8FF);
+  static const Color lightGreenBackground = Color(0xFFDCFCE7);
+  static const Color lightYellowBackground = Color(0xFFFFF7E6);
+
+  static const Color purple = Color(0xFF8B5CF6);
+  static const Color green = Color(0xFF22C55E);
+  static const Color yellow = Color(0xFFFACC15);
 }

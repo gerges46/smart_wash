@@ -17,4 +17,37 @@ class AppStrings {
   static const String emailHint = "example@email.com";
   static const String phoneHint = "05xxxxxxxxx";
   static const String passwordHint = "••••••••";
+
+  // Bottom navigation
+  static const String home = "الرئيسية";
+  static const String myBookings = "حجوزاتي";
+  static const String profile = "الملف الشخصي";
+
+  // Home header
+  static const String welcome = "مرحباً";
+  static const String dearCustomer = "عميلنا العزيز";
+  static const String client = "عميل";
+  static const String newBooking = "حجز جديد";
+  static const String previousBooking = "حجز مسبق";
+
+  // Services section
+  static const String ourServices = "خدماتنا";
+  static const String externalWash = "غسيل خارجي";
+  static const String internalWash = "غسيل داخلي";
+  static const String fullWash = "غسيل كامل";
+  static const String polish = "تلميع";
+
+  static const String externalPrice = "50 ر.س";
+  static const String internalPrice = "60 ر.س";
+  static const String fullPrice = "90 ر.س";
+  static const String polishPrice = "120 ر.س";
+
+  // Why us section
+  static const String whyUs = "لماذا نحن؟";
+  static const String mobileService = "خدمة متنقلة";
+  static const String mobileServiceDesc = "نأتي إليك أينما كنت";
+  static const String flexibleTimes = "مواعيد مرنة";
+  static const String flexibleTimesDesc = "اختر الوقت المناسب لك";
+  static const String highQuality = "جودة عالية";
+  static const String highQualityDesc = "فريق محترف ومعدات حديثة";
 }

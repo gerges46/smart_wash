@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/features/auth/views/login_view.dart';
 import 'package:smart_clean/features/auth/views/register_view.dart';
+import 'package:smart_clean/features/home/home_view.dart';
 
 class Routes {
   static const String splashRoute = "/";
   static const String loginRoute = "/login";
   static const String registerRoute = "/register";
+  static const String homeRoute = "/home";
 }
 
 class RouteGenerator {
@@ -19,7 +21,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginView());
       case Routes.registerRoute:
         return MaterialPageRoute(builder: (_) => const RegisterView());
-
+      case Routes.homeRoute:
+        return MaterialPageRoute(builder: (_) => const HomeView());
       default:
         return unDefinedRoute();
     }
