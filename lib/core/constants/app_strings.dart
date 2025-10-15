@@ -38,4 +38,9 @@ class AppStrings {
   static const String registerButton = "تسجيل";
   static const String haveAccount = "لديك حساب بالفعل؟ ";
   static const String loginNow = "سجّل دخولك الآن";
+
+  // OTP Verification
+  static const String otpTitle = "أدخل رمز التحقق";
+  static const String otpSubtitle = "لقد أرسلنا رمز التحقق إلى رقم جوالك";
+  static const String verifyNow = "تحقق الآن";
 }
