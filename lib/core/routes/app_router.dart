@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
-import 'package:smart_clean/features/auth/views/login_view.dart';
-import 'package:smart_clean/features/auth/views/register_view.dart';
-import 'package:smart_clean/features/home/home_view.dart';
+import 'package:smart_clean/features/splash_view.dart';
 
 class Routes {
   static const String splashRoute = "/";
@@ -14,15 +12,15 @@ class Routes {
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case Routes.splashRoute:
-      //   return MaterialPageRoute(builder: (_) => const SplashView());
+      case Routes.splashRoute:
+        return MaterialPageRoute(builder: (_) => const SplashView());
 
-      case Routes.loginRoute:
-        return MaterialPageRoute(builder: (_) => const LoginView());
-      case Routes.registerRoute:
-        return MaterialPageRoute(builder: (_) => const RegisterView());
-      case Routes.homeRoute:
-        return MaterialPageRoute(builder: (_) => const HomeView());
+      // case Routes.loginRoute:
+      //   return MaterialPageRoute(builder: (_) => const LoginView());
+      // case Routes.registerRoute:
+      //   return MaterialPageRoute(builder: (_) => const RegisterView());
+      // case Routes.homeRoute:
+      //   return MaterialPageRoute(builder: (_) => const HomeView());
       default:
         return unDefinedRoute();
     }
@@ -31,8 +29,8 @@ class RouteGenerator {
   static Route<dynamic> unDefinedRoute() {
     return MaterialPageRoute(
       builder: (_) => Scaffold(
-        appBar: AppBar(title: const Text(AppStrings.noRouteFound)),
-        body: const Center(child: Text(AppStrings.noRouteFound)),
+        appBar: AppBar(title: Text(AppStrings.noRouteFound)),
+        body: Center(child: Text(AppStrings.noRouteFound)),
       ),
     );
   }
