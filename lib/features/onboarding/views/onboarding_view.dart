@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
+import 'package:smart_clean/core/routes/app_router.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -48,7 +49,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void _goToLogin() {
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, Routes.loginRoute);
   }
 
   @override

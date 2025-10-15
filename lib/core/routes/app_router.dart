@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
+import 'package:smart_clean/features/auth/views/login/login_view.dart';
+import 'package:smart_clean/features/auth/views/register/register_view.dart';
 import 'package:smart_clean/features/onboarding/views/onboarding_view.dart';
 import 'package:smart_clean/features/splash_view.dart';
 
@@ -20,10 +22,10 @@ class RouteGenerator {
       case Routes.onboardingRoute:
         return MaterialPageRoute(builder: (_) => const OnboardingView());
 
-      // case Routes.loginRoute:
-      //   return MaterialPageRoute(builder: (_) => const LoginView());
-      // case Routes.registerRoute:
-      //   return MaterialPageRoute(builder: (_) => const RegisterView());
+      case Routes.loginRoute:
+        return MaterialPageRoute(builder: (_) => const LoginView());
+      case Routes.registerRoute:
+        return MaterialPageRoute(builder: (_) => const RegisterView());
       // case Routes.homeRoute:
       //   return MaterialPageRoute(builder: (_) => const HomeView());
 
