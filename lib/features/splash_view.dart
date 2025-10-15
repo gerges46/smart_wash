@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_clean/core/constants/app_assets.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
