@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
+import 'package:smart_clean/features/auth/views/forgot_password/forgot_password_view.dart';
 import 'package:smart_clean/features/auth/views/login/login_view.dart';
 import 'package:smart_clean/features/auth/views/otp/otp_view.dart';
 import 'package:smart_clean/features/auth/views/register/register_view.dart';
@@ -13,6 +14,7 @@ class Routes {
   static const String registerRoute = "/register";
   static const String homeRoute = "/home";
   static const String otpRoute = "/otp";
+  static const String forgotPasswordRoute = "/forgot-password";
 }
 
 class RouteGenerator {
@@ -30,6 +32,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const RegisterView());
       case Routes.otpRoute:
         return MaterialPageRoute(builder: (_) => OTPView());
+      case Routes.forgotPasswordRoute:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordView());
       // case Routes.homeRoute:
       //   return MaterialPageRoute(builder: (_) => const HomeView());
 

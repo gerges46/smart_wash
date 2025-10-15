@@ -43,4 +43,13 @@ class AppStrings {
   static const String otpTitle = "أدخل رمز التحقق";
   static const String otpSubtitle = "لقد أرسلنا رمز التحقق إلى رقم جوالك";
   static const String verifyNow = "تحقق الآن";
+
+  // Forgot / Reset
+  static const String forgotTitle = "استعادة كلمة المرور";
+  static const String forgotSubtitle =
+      "أدخل بريدك الإلكتروني أو رقم الجوال لاستلام رمز التحقق";
+  static const String contactHint = "البريد الإلكتروني أو رقم الجوال";
+  static const String sendCode = "إرسال رمز";
+  static const String newPasswordHint = "كلمة المرور الجديدة";
+  static const String resetPasswordButton = "تعيين كلمة المرور";
 }
