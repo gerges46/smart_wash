@@ -31,4 +31,6 @@ class AppColors {
   static const Color cancel = Colors.redAccent;
 
   static const Color black87 = Colors.black87;
+  static const Color darkText = Color(0xFF222222); // لون النص الغامق
+  static const Color lightText = Color(0xFF777777); // لون النص الفاتح
 }

@@ -127,4 +127,23 @@ class AppStrings {
   static const writeNotes = "اكتب ملاحظاتك هنا...";
   static const sendRating = "إرسال التقييم";
   static const thanksForRating = "شكراً لتقييمك!";
+
+  // 🟣 Auth (User)
+  static const String login = "Login";
+  static const String register = "Register";
+  static const String username = "Username";
+
+  // 🧰 Worker/Admin Section
+  static const String workerLoginTitle = "Worker Login";
+  static const String ordersDashboard = "Orders Dashboard";
+  static const String orderDetails = "Order Details";
+  static const String workerSchedule = "Work Schedule";
+
+  static const String startWashing = "Start Washing";
+  static const String completeOrder = "Complete Order";
+
+  // 🔔 Common Texts
+  static const String loading = "Loading...";
+  static const String success = "Success!";
+  static const String failed = "Failed!";
 }

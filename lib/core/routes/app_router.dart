@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/forgot_password_view.dart';
-import 'package:smart_clean/features/user/auth/views/login/login_view.dart';
-import 'package:smart_clean/features/user/auth/views/otp/otp_view.dart';
-import 'package:smart_clean/features/user/auth/views/register/register_view.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/admin_orders_dashboard_view.dart';
+import 'package:smart_clean/features/admin/admin_order_details/admin_order_details_view.dart';
+import 'package:smart_clean/features/admin/admin_schedule/Admin_schedule_view.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/forgot_password_view.dart';
+import 'package:smart_clean/features/user/auth/login/login_view.dart';
+import 'package:smart_clean/features/user/auth/otp/otp_view.dart';
+import 'package:smart_clean/features/user/auth/register/register_view.dart';
 import 'package:smart_clean/features/user/booking/booking_details/booking_details_view.dart';
 import 'package:smart_clean/features/user/booking/my_bookings/my_bookings_view.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/new_booking_view.dart';
@@ -34,6 +37,11 @@ class Routes {
   static const String ratingRoute = "/rating";
   static const String profileRoute = "/profile";
   static const String bottomNavRoute = "/bottomNavShell";
+
+  // 👷 Worker/Admin Routes
+  static const String adminDashboard = "/admin-dashboard";
+  static const String adminOrderDetails = "/admin-order-details";
+  static const String adminSchedule = "/admin-schedule";
 }
 
 class RouteGenerator {
@@ -60,7 +68,6 @@ class RouteGenerator {
       case Routes.homeRoute:
         return MaterialPageRoute(builder: (_) => const HomeView());
 
-      // 🧩 User Screens
       case Routes.newBookingRoute:
         return MaterialPageRoute(builder: (_) => const NewBookingView());
 
@@ -86,6 +93,19 @@ class RouteGenerator {
 
       case Routes.profileRoute:
         return MaterialPageRoute(builder: (_) => const ProfileView());
+
+      // 👷 Worker/Admin Routes
+      case Routes.adminDashboard:
+        return MaterialPageRoute(builder: (_) => const AdminDashboardView());
+
+      case Routes.adminOrderDetails:
+        return MaterialPageRoute(
+          builder: (_) =>
+              AdminOrderDetailsView(order: settings.arguments as Map),
+        );
+
+      case Routes.adminSchedule:
+        return MaterialPageRoute(builder: (_) => const AdminScheduleView());
 
       default:
         return unDefinedRoute();

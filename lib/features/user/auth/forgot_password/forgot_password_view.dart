@@ -7,11 +7,11 @@ import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
 import 'package:smart_clean/features/user/auth/cubit/forgot_password/forgot_password_cubit.dart';
 import 'package:smart_clean/features/user/auth/cubit/forgot_password/forgot_password_state.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/widgets/contact_form.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/widgets/forgot_header.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/widgets/forgot_timer.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/widgets/otp_fields.dart';
-import 'package:smart_clean/features/user/auth/views/forgot_password/widgets/reset_form.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/widgets/contact_form.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/widgets/forgot_header.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/widgets/forgot_timer.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/widgets/otp_fields.dart';
+import 'package:smart_clean/features/user/auth/forgot_password/widgets/reset_form.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});

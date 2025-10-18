@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/features/user/auth/views/register/widgets/register_button.dart';
-import 'package:smart_clean/features/user/auth/views/register/widgets/register_form.dart';
-import 'package:smart_clean/features/user/auth/views/register/widgets/register_header.dart';
+import 'package:smart_clean/features/user/auth/register/widgets/register_button.dart';
+import 'package:smart_clean/features/user/auth/register/widgets/register_form.dart';
+import 'package:smart_clean/features/user/auth/register/widgets/register_header.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
