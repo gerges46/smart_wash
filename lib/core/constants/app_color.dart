@@ -28,4 +28,7 @@ class AppColors {
   static const Color fieldBackground = Color(0xFFF0F3F6);
   static const Color greyText = Color(0xFF9CA3AF);
   static const Color border = Color(0xFFCBD5E1);
+  static const Color cancel = Colors.redAccent;
+
+  static const Color black87 = Colors.black87;
 }
