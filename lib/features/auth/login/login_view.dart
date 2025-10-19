@@ -10,6 +10,9 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -21,9 +24,15 @@ class LoginView extends StatelessWidget {
                 SizedBox(height: 40.h),
                 const LoginHeader(),
                 SizedBox(height: 32.h),
-                const LoginForm(),
+                LoginForm(
+                  emailController: emailController,
+                  passwordController: passwordController,
+                ),
                 SizedBox(height: 10.h),
-                const LoginButton(),
+                LoginButton(
+                  emailController: emailController,
+                  passwordController: passwordController,
+                ),
                 SizedBox(height: 20.h),
                 const LoginFooter(),
               ],

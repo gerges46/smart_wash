@@ -21,7 +21,7 @@ class AppStrings {
 
   // 🔹 Login Screen
   static const String loginTitle = "تسجيل الدخول إلى حسابك";
-  static const String loginEmailOrPhone = "البريد الإلكتروني أو رقم الجوال";
+  static const String loginEmail = "البريد الإلكتروني ";
   static const String loginPassword = "كلمة المرور";
   static const String forgotPassword = "نسيت كلمة المرور؟";
   static const String loginButton = "تسجيل الدخول";

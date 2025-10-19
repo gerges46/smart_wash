@@ -1,12 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/features/auth/cubit/auth_cubit.dart';
 import 'package:smart_clean/features/user/booking/booking_details/cubit/booking_details_cubit.dart';
+import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
+import 'package:smart_clean/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     ScreenUtilInit(
@@ -22,7 +27,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => BookingDetailsCubit())],
+      providers: [
+        BlocProvider(create: (_) => BookingDetailsCubit()),
+        BlocProvider(create: (_) => BookingCubit()),
+        BlocProvider(create: (_) => AuthCubit()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Smart Washer',
@@ -44,7 +53,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.adminDashboard,
+        initialRoute: Routes.registerRoute,
       ),
     );
   }

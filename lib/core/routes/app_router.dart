@@ -3,10 +3,8 @@ import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/admin_orders_dashboard_view.dart';
 import 'package:smart_clean/features/admin/admin_order_details/admin_order_details_view.dart';
 import 'package:smart_clean/features/admin/admin_schedule/Admin_schedule_view.dart';
-import 'package:smart_clean/features/user/auth/forgot_password/forgot_password_view.dart';
-import 'package:smart_clean/features/user/auth/login/login_view.dart';
-import 'package:smart_clean/features/user/auth/otp/otp_view.dart';
-import 'package:smart_clean/features/user/auth/register/register_view.dart';
+import 'package:smart_clean/features/auth/login/login_view.dart';
+import 'package:smart_clean/features/auth/register/register_view.dart';
 import 'package:smart_clean/features/user/booking/booking_details/booking_details_view.dart';
 import 'package:smart_clean/features/user/booking/my_bookings/my_bookings_view.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/new_booking_view.dart';
@@ -25,7 +23,6 @@ class Routes {
   static const String loginRoute = "/login";
   static const String registerRoute = "/register";
   static const String homeRoute = "/home";
-  static const String otpRoute = "/otp";
   static const String forgotPasswordRoute = "/forgot-password";
 
   // 🧩 Routes for User Side
@@ -57,13 +54,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginView());
 
       case Routes.registerRoute:
-        return MaterialPageRoute(builder: (_) => const RegisterView());
+        return MaterialPageRoute(builder: (_) => RegisterView());
 
-      case Routes.otpRoute:
-        return MaterialPageRoute(builder: (_) => OTPView());
-
-      case Routes.forgotPasswordRoute:
-        return MaterialPageRoute(builder: (_) => const ForgotPasswordView());
+      // case Routes.forgotPasswordRoute:
+      //   return MaterialPageRoute(builder: (_) => const ForgotPasswordView());
 
       case Routes.homeRoute:
         return MaterialPageRoute(builder: (_) => const HomeView());

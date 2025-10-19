@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "477538030299",
+    "project_id": "smartwashingapp",
+    "storage_bucket": "smartwashingapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477538030299:android:df050e206f06c1a0ba32fe",
+        "android_client_info": {
+          "package_name": "com.example.smart_clean"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyaU4WLtCNhAtuiw21J37p1uTvSNT0uI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
