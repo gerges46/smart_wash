@@ -8,6 +8,7 @@ import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboar
 import 'package:smart_clean/features/auth/cubit/auth_cubit.dart';
 import 'package:smart_clean/features/user/booking/booking_details/cubit/booking_details_cubit.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
+import 'package:smart_clean/features/user/home/cubit/home_cubit.dart';
 import 'package:smart_clean/firebase_options.dart';
 
 void main() async {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => BookingCubit()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => DashboardCubit()),
+        BlocProvider(create: (_) => HomeCubit()..fetchServices()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

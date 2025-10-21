@@ -16,8 +16,8 @@ class ActionButtons extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: () =>
                 Navigator.pushNamed(context, Routes.newBookingRoute),
-            icon: const Icon(Icons.add),
-            label: const Text(AppStrings.newBooking),
+            icon: const Icon(Icons.add,color: AppColors.white,),
+            label: const Text(AppStrings.newBooking,style: TextStyle(color: AppColors.white),),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               padding: EdgeInsets.symmetric(vertical: AppPadding.p14.h),
@@ -32,8 +32,8 @@ class ActionButtons extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: () =>
                 Navigator.pushNamed(context, Routes.preBookingRoute),
-            icon: const Icon(Icons.event),
-            label: const Text(AppStrings.preBooking),
+            icon: const Icon(Icons.event,color: AppColors.white,),
+            label: const Text(AppStrings.preBooking,style: TextStyle(color: AppColors.white),),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.secondary,
               padding: EdgeInsets.symmetric(vertical: AppPadding.p14.h),

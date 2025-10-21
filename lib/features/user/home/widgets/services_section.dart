@@ -1,76 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
+import 'package:smart_clean/features/user/home/cubit/home_cubit.dart';
 
 class ServicesSection extends StatelessWidget {
   const ServicesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final services = [
-      {
-        "title": AppStrings.service1,
-        "price": "50 EGP",
-        "icon": Icons.local_car_wash,
-        "color": Colors.blueAccent,
-      },
-      {
-        "title": AppStrings.service2,
-        "price": "70 EGP",
-        "icon": Icons.cleaning_services,
-        "color": Colors.green,
-      },
-      {
-        "title": AppStrings.service3,
-        "price": "120 EGP",
-        "icon": Icons.star_rate_rounded,
-        "color": Colors.amber,
-      },
-      {
-        "title": AppStrings.service4,
-        "price": "80 EGP",
-        "icon": Icons.build_circle,
-        "color": Colors.deepPurple,
-      },
-    ];
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+         if (state is HomeInitial || state is HomeLoading) {
+      return const Center(child: CircularProgressIndicator());
+      } else if (state is HomeError) {
+      return Center(child: Text(state.message));
+      }else if (state is HomeLoaded) {
+          final services = state.services;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+          // ⚡ ثبّتنا الألوان والأيقونات هنا
+          final colors = [Colors.blueAccent, Colors.green, Colors.amber, Colors.deepPurple];
+          final icons = [Icons.local_car_wash, Icons.cleaning_services, Icons.star_rate_rounded, Icons.build_circle];
+
+          return  Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppStrings.ourServices,
-              style: TextStyle(
-                fontSize: AppSize.s18.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(onPressed: () {}, child: const Text(AppStrings.viewAll)),
-          ],
-        ),
-        SizedBox(height: AppSize.s8.h),
-        SizedBox(
-          height: AppSize.s160.h,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: services.length,
-            separatorBuilder: (_, __) => SizedBox(width: AppSize.s12.w),
-            itemBuilder: (context, i) {
-              final s = services[i];
-              return _ServiceCard(
-                title: s['title'] as String,
-                price: s['price'] as String,
-                icon: s['icon'] as IconData,
-                color: s['color'] as Color,
-              );
-            },
+        Text(
+          AppStrings.ourServices,
+          style: TextStyle(
+            fontSize: AppSize.s18.sp,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        TextButton(onPressed: () {}, child: const Text(AppStrings.viewAll)),
       ],
+    ),
+    SizedBox(height: AppSize.s8.h),
+    SizedBox(
+      height: AppSize.s160.h, // ده الـ height للكاردز
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: services.length,
+        separatorBuilder: (_, __) => SizedBox(width: AppSize.s12.w),
+        itemBuilder: (context, i) {
+          final s = services[i];
+          return _ServiceCard(
+            title: s['name'] as String,
+            price: s['price'] as String,
+            icon: icons[i % icons.length],
+            color: colors[i % colors.length],
+          );
+        },
+      ),
+    ),
+  ],
+);
+
+        }
+        return const SizedBox();
+      },
     );
   }
 }
