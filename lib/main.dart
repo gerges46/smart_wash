@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.registerRoute,
+        initialRoute: Routes.adminDashboard,
       ),
     );
   }

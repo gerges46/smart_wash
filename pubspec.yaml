@@ -48,6 +48,8 @@ dependencies:
   cloud_firestore: ^6.0.3
   firebase_core: ^4.2.0
   awesome_dialog: ^3.3.0
+  rive: ^0.14.0-dev.12
+  rive_common: ^0.4.15
 
 dev_dependencies:
   flutter_test:

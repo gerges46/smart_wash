@@ -41,46 +41,46 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAZQJ_5R_DM7ISQeLB95qWU9nNjb4JNAJw',
-    appId: '1:477538030299:web:1825a9980f5ac7e9ba32fe',
-    messagingSenderId: '477538030299',
-    projectId: 'smartwashingapp',
-    authDomain: 'smartwashingapp.firebaseapp.com',
-    storageBucket: 'smartwashingapp.firebasestorage.app',
+    apiKey: 'AIzaSyAPO0jgrMJcLHUhrrR7oCns4ss4sQhLEC8',
+    appId: '1:1019462478481:web:b792b06b49f4a71122ad30',
+    messagingSenderId: '1019462478481',
+    projectId: 'walkingmachine',
+    authDomain: 'walkingmachine.firebaseapp.com',
+    storageBucket: 'walkingmachine.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCyaU4WLtCNhAtuiw21J37p1uTvSNT0uI8',
-    appId: '1:477538030299:android:df050e206f06c1a0ba32fe',
-    messagingSenderId: '477538030299',
-    projectId: 'smartwashingapp',
-    storageBucket: 'smartwashingapp.firebasestorage.app',
+    apiKey: 'AIzaSyCI4EltmKPE_2_3y2Umk_FQQK7zikjeqIE',
+    appId: '1:1019462478481:android:7734265f2435552c22ad30',
+    messagingSenderId: '1019462478481',
+    projectId: 'walkingmachine',
+    storageBucket: 'walkingmachine.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBzCk9OoJRGzZ2cDxohvUJkqpQ6ZgOR320',
-    appId: '1:477538030299:ios:eaf1250913e04a7fba32fe',
-    messagingSenderId: '477538030299',
-    projectId: 'smartwashingapp',
-    storageBucket: 'smartwashingapp.firebasestorage.app',
+    apiKey: 'AIzaSyC82rSxg9191c3F3UgYZNAXcPv8D5mJGKc',
+    appId: '1:1019462478481:ios:8059244b9c001e4122ad30',
+    messagingSenderId: '1019462478481',
+    projectId: 'walkingmachine',
+    storageBucket: 'walkingmachine.firebasestorage.app',
     iosBundleId: 'com.example.smartClean',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBzCk9OoJRGzZ2cDxohvUJkqpQ6ZgOR320',
-    appId: '1:477538030299:ios:eaf1250913e04a7fba32fe',
-    messagingSenderId: '477538030299',
-    projectId: 'smartwashingapp',
-    storageBucket: 'smartwashingapp.firebasestorage.app',
+    apiKey: 'AIzaSyC82rSxg9191c3F3UgYZNAXcPv8D5mJGKc',
+    appId: '1:1019462478481:ios:8059244b9c001e4122ad30',
+    messagingSenderId: '1019462478481',
+    projectId: 'walkingmachine',
+    storageBucket: 'walkingmachine.firebasestorage.app',
     iosBundleId: 'com.example.smartClean',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAZQJ_5R_DM7ISQeLB95qWU9nNjb4JNAJw',
-    appId: '1:477538030299:web:8df6febbc06d911cba32fe',
-    messagingSenderId: '477538030299',
-    projectId: 'smartwashingapp',
-    authDomain: 'smartwashingapp.firebaseapp.com',
-    storageBucket: 'smartwashingapp.firebasestorage.app',
+    apiKey: 'AIzaSyAPO0jgrMJcLHUhrrR7oCns4ss4sQhLEC8',
+    appId: '1:1019462478481:web:f08a43fccb8aebf122ad30',
+    messagingSenderId: '1019462478481',
+    projectId: 'walkingmachine',
+    authDomain: 'walkingmachine.firebaseapp.com',
+    storageBucket: 'walkingmachine.firebasestorage.app',
   );
 }

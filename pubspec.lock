@@ -37,10 +37,10 @@ packages:
     dependency: transitive
     description:
       name: bloc
-      sha256: e18b8e7825e9921d67a6d256dba0b6015ece8a577eb0a411845c46a352994d78
+      sha256: a2cebb899f91d36eeeaa55c7b20b5915db5a9df1b8fd4a3c9c825e22e474537d
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.1"
+    version: "9.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -422,21 +422,29 @@ packages:
     source: hosted
     version: "6.1.5+1"
   rive:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rive
-      sha256: "7fb6efeae1e105d7231cf8fd6ad99ec33369c0c8285d19a299af43acf34065b8"
+      sha256: "8c6059dfc1aa0e89d9f1107f735f3114f9d1d06dcba798f823aeac55e7584295"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0-dev.11"
+    version: "0.14.0-dev.12"
+  rive_common:
+    dependency: "direct main"
+    description:
+      name: rive_common
+      sha256: "2ba42f80d37a4efd0696fb715787c4785f8a13361e8aea9227c50f1e78cf763a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.15"
   rive_native:
     dependency: transitive
     description:
       name: rive_native
-      sha256: "9458cbc8e31184b05b1b091030a7ad50c46c8473da54f7e8f197298166c5397e"
+      sha256: f9c258c28b65e97e442290637b87de6eb0910665584269263153af56045a0ef7
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.14"
+    version: "0.0.15"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -457,10 +465,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
-      sha256: "6a52cfcdaeac77cad8c97b539ff688ccfc458c007b4db12be584fbe5c0e49e03"
+      sha256: "1c33a907142607c40a7542768ec9badfd16293bac51da3a4482623d15845f88b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.4"
+    version: "2.5.5"
   shared_preferences_linux:
     dependency: transitive
     description:
