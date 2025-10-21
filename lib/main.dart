@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboard_cubit.dart';
 import 'package:smart_clean/features/auth/cubit/auth_cubit.dart';
 import 'package:smart_clean/features/user/booking/booking_details/cubit/booking_details_cubit.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => BookingDetailsCubit()),
         BlocProvider(create: (_) => BookingCubit()),
         BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => DashboardCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.adminDashboard,
+        initialRoute: Routes.bottomNavRoute,
       ),
     );
   }

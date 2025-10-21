@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
+import 'package:smart_clean/core/utils/error_handler.dart'; // ✅ استخدمنا ملف الأخطاء هنا
 
 part 'booking_state.dart';
 
@@ -64,12 +65,12 @@ class BookingCubit extends Cubit<BookingState> {
       final user = _auth.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("يجب تسجيل الدخول أولاً")),
+          const SnackBar(content: Text("Please log in first.")),
         );
         return;
       }
 
-      // 🔍 تحويل الوقت لصيغة موحدة
+      // 🔍 Format selected time and date
       final selectedTime = "${state.time!.hour}:${state.time!.minute}";
       final selectedDate = DateTime(
         state.date!.year,
@@ -77,7 +78,7 @@ class BookingCubit extends Cubit<BookingState> {
         state.date!.day,
       );
 
-      // 🧠 تحقق إذا كان هذا الموعد محجوز مسبقًا
+      // 🧠 Check if this slot is already booked
       final existing = await _firestore
           .collectionGroup('bookings')
           .where('date', isEqualTo: selectedDate.toIso8601String())
@@ -87,14 +88,14 @@ class BookingCubit extends Cubit<BookingState> {
       if (existing.docs.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("⚠️ هذا الموعد محجوز بالفعل! اختر وقتًا آخر."),
+            content: Text("⚠️ This time slot is already booked! Please choose another."),
             backgroundColor: Colors.orange,
           ),
         );
         return;
       }
 
-      // ✅ إضافة الحجز الجديد
+      // ✅ Add new booking
       await _firestore
           .collection('users')
           .doc(user.uid)
@@ -109,14 +110,13 @@ class BookingCubit extends Cubit<BookingState> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("✅ تم حجز الخدمة بنجاح!"),
+          content: Text("✅ Booking confirmed successfully!"),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("حدث خطأ أثناء الحجز: $e")),
-      );
+      // ✅ هنا استخدمنا ملف الـ error handler بدل الرسالة العادية
+      handleFirebaseError(context, e);
     }
   }
 }

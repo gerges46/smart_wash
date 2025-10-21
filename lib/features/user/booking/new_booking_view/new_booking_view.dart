@@ -37,17 +37,17 @@ class NewBookingView extends StatelessWidget {
                     onAddressChange: cubit.changeAddress,
                   ),
                   SizedBox(height: 40.h),
-                 BookingConfirmButton(
-  onConfirm: () async {
-    if (cubit.validateData(context)) {
-      await cubit.addBookingToFirestore(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const PaymentView()),
-      );
-    }
-  },
-),
+                    BookingConfirmButton(
+                      onConfirm: () async {
+                          if (cubit.validateData(context)) {
+                              await cubit.addBookingToFirestore(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const PaymentView()),
+                                );
+                              }
+                            },
+                          ),
 
                   SizedBox(height: 50.h),
                 ],

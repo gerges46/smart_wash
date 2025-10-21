@@ -1,323 +1,262 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/core/constants/app_strings.dart';
-import 'package:smart_clean/core/constants/value_manager.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboard_cubit.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboard_state.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/admin_dashboard_helper.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/dashboard_appbar.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/dashboard_summary.dart';
+import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/order_card.dart';
 
 class AdminDashboardView extends StatelessWidget {
   const AdminDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final orders = [
-      {
-        "client": "Ahmed Hassan",
-        "service": "Full Wash",
-        "time": "10:00 AM",
-        "status": "Pending",
-      },
-      {
-        "client": "Omar Ali",
-        "service": "Interior Cleaning",
-        "time": "12:30 PM",
-        "status": "In Progress",
-      },
-      {
-        "client": "Sara Mohamed",
-        "service": "Polish & Shine",
-        "time": "04:00 PM",
-        "status": "Completed",
-      },
-    ];
+    final orders = AdminDashboardHelper.orders;
+    final completedCount =
+        orders.where((e) => e["status"] == "Completed").length;
+    final pendingCount =
+        orders.where((e) => e["status"] == "Pending").length;
 
-    Color getStatusColor(String status) {
-      switch (status) {
-        case "Completed":
-          return Colors.green;
-        case "In Progress":
-          return Colors.orange;
-        default:
-          return Colors.grey;
-      }
-    }
-
-    IconData getStatusIcon(String status) {
-      switch (status) {
-        case "Completed":
-          return Icons.check_circle;
-        case "In Progress":
-          return Icons.work_history_rounded;
-        default:
-          return Icons.pending_actions;
-      }
-    }
-
-    final completedCount = orders
-        .where((e) => e["status"] == "Completed")
-        .length;
-    final pendingCount = orders.where((e) => e["status"] == "Pending").length;
-
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90.h),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primary.withOpacity(0.95),
-                AppColors.secondary.withOpacity(0.85),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    return BlocListener<DashboardCubit, DashboardState>(
+      listener: (context, state) {
+        if (state.error != null && state.error!.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error!),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: const DashboardAppBar(),
+        body: Column(
+          children: [
+            DashboardSummary(
+              total: orders.length,
+              completed: completedCount,
+              pending: pendingCount,
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  final order = orders[index];
+                  return OrderCard(order: order);
+                },
               ),
-            ],
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.r)),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // 👋 Title + Greeting
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22.r,
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        child: Icon(
-                          Icons.dashboard,
-                          color: Colors.white,
-                          size: 24.sp,
-                        ),
+            ),
+          ],
+        ),
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton.extended(
+              backgroundColor: AppColors.secondary,
+              onPressed: () {
+                final parentContext = context; // نستخدمه داخل الـDialog
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    String? selectedService;
+                    final priceController = TextEditingController();
+
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
                       ),
-                      SizedBox(width: 12.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                      backgroundColor: Colors.white,
+                      title: Row(
+                        children: const [
+                          Icon(Icons.edit, color: AppColors.primary),
+                          SizedBox(width: 8),
                           Text(
-                            "Smart Clean",
+                            "تعديل سعر الخدمات",
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 13.sp,
-                            ),
-                          ),
-                          Text(
-                            AppStrings.ordersDashboard,
-                            style: TextStyle(
-                              fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppColors.primary,
+                              fontSize: 18,
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-
-                  // 📅 Calendar Button
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, Routes.adminSchedule);
-                    },
-                    borderRadius: BorderRadius.circular(50),
-                    child: Container(
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: const Icon(
-                        Icons.calendar_month,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          // 📊 Dashboard Summary
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            margin: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withOpacity(0.9),
-                  AppColors.secondary,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatItem("Total", orders.length.toString(), Colors.white),
-                _buildStatItem(
-                  "Completed",
-                  completedCount.toString(),
-                  Colors.white,
-                ),
-                _buildStatItem(
-                  "Pending",
-                  pendingCount.toString(),
-                  Colors.white,
-                ),
-              ],
-            ),
-          ),
-
-          // 📋 Orders List
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final order = orders[index];
-                final status = order["status"]!;
-                final statusColor = getStatusColor(status);
-                final statusIcon = getStatusIcon(status);
-
-                return InkWell(
-                  borderRadius: BorderRadius.circular(AppSize.s16),
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.adminOrderDetails,
-                      arguments: order,
-                    );
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: EdgeInsets.only(bottom: 14.h),
-                    padding: EdgeInsets.all(14.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(AppSize.s16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 26.r,
-                          backgroundColor: statusColor.withOpacity(0.15),
-                          child: Icon(
-                            statusIcon,
-                            color: statusColor,
-                            size: 24.sp,
-                          ),
-                        ),
-                        SizedBox(width: 14.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                order["client"]!,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.darkText,
+                      content: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "اختر الخدمة:",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                "${order["service"]}  •  ${order["time"]}",
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  color: Colors.grey[600],
+                              hint: const Text("اختر الخدمة"),
+                              value: selectedService,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: "غسيل خارجي",
+                                  child: Text("غسيل خارجي"),
                                 ),
+                                DropdownMenuItem(
+                                  value: "غسيل داخلي",
+                                  child: Text("غسيل داخلي"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "تلميع كامل",
+                                  child: Text("تلميع كامل"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "تنظيف المحرك",
+                                  child: Text("تنظيف المحرك"),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                selectedService = value;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
+                              "اكتب السعر الجديد (بالريال السعودي):",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: priceController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: "70",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actionsAlignment: MainAxisAlignment.spaceBetween,
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            "إلغاء",
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 6.h,
-                            horizontal: 12.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Text(
-                            status,
-                            style: TextStyle(
-                              color: statusColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13.sp,
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
+                          onPressed: () async {
+                            final name = selectedService;
+                            final priceText = priceController.text.trim();
+
+                            if (name == null || priceText.isEmpty) {
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "يرجى اختيار الخدمة وكتابة السعر الجديد."),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                              return;
+                            }
+
+                            final price = double.tryParse(priceText);
+                            if (price == null) {
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "السعر يجب أن يكون رقمًا صحيحًا."),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                              return;
+                            }
+
+                            final result = await parentContext
+                                .read<DashboardCubit>()
+                                .addService(name, price);
+
+                            Navigator.of(context, rootNavigator: true).pop();
+
+                            String msg = result == "updated"
+                                ? 'تم تحديث سعر "$name" بنجاح ✅'
+                                : result == "added"
+                                    ? 'تمت إضافة الخدمة "$name" بنجاح ✅'
+                                    : 'حدث خطأ أثناء الحفظ ❌';
+
+                            final color = result == "error"
+                                ? Colors.red
+                                : Colors.green;
+
+                            ScaffoldMessenger.of(parentContext).showSnackBar(
+                              SnackBar(
+                                content: Text(msg),
+                                backgroundColor: color,
+                                behavior: SnackBarBehavior.floating,
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.check, color: Colors.white),
+                          label: const Text(
+                            "تأكيد",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
-                    ),
-                  ),
+                    );
+                  },
                 );
               },
+              icon: const Icon(Icons.attach_money, color: Colors.white),
+              label: const Text(
+                "تعديل سعر الخدمات",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.adminSchedule);
-        },
-        icon: const Icon(Icons.schedule, color: AppColors.white),
-        label: const Text(
-          "View Schedule",
-          style: TextStyle(color: AppColors.white),
+            const SizedBox(height: 10),
+            FloatingActionButton.extended(
+              backgroundColor: AppColors.primary,
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.adminSchedule);
+              },
+              icon: const Icon(Icons.schedule, color: Colors.white),
+              label: const Text(
+                "View Schedule",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStatItem(String title, String value, Color color) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: color,
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          title,
-          style: TextStyle(color: color.withOpacity(0.9), fontSize: 13.sp),
-        ),
-      ],
     );
   }
 }
