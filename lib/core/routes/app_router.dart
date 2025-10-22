@@ -77,7 +77,7 @@ class RouteGenerator {
 
       case Routes.bookingDetailsRoute:
         return MaterialPageRoute(
-          builder: (_) => BookingDetailsView(booking: {}),
+          builder: (_) => BookingDetailsView(),
         );
 
       case Routes.ratingRoute:
