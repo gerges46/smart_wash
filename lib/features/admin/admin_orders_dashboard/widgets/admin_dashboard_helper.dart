@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_clean/core/constants/app_strings.dart';
 
 class AdminDashboardHelper {
   static final orders = [
@@ -6,27 +7,27 @@ class AdminDashboardHelper {
       "client": "Ahmed Hassan",
       "service": "Full Wash",
       "time": "10:00 AM",
-      "status": "Pending",
+      "status": AppStrings.bookingStatusPending,
     },
     {
       "client": "Omar Ali",
       "service": "Interior Cleaning",
       "time": "12:30 PM",
-      "status": "In Progress",
+      "status": AppStrings.bookingStatusInProgress,
     },
     {
       "client": "Sara Mohamed",
       "service": "Polish & Shine",
       "time": "04:00 PM",
-      "status": "Completed",
+      "status": AppStrings.bookingStatusCompleted,
     },
   ];
 
   static Color getStatusColor(String status) {
     switch (status) {
-      case "Completed":
+      case AppStrings.bookingStatusCompleted:
         return Colors.green;
-      case "In Progress":
+      case AppStrings.bookingStatusInProgress:
         return Colors.orange;
       default:
         return Colors.grey;
@@ -35,9 +36,9 @@ class AdminDashboardHelper {
 
   static IconData getStatusIcon(String status) {
     switch (status) {
-      case "Completed":
+      case AppStrings.bookingStatusCompleted:
         return Icons.check_circle;
-      case "In Progress":
+      case AppStrings.bookingStatusInProgress:
         return Icons.work_history_rounded;
       default:
         return Icons.pending_actions;

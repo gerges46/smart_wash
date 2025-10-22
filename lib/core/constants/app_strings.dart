@@ -100,6 +100,10 @@ class AppStrings {
   static const defaultPrice = "70 EGP";
   static const cancelBooking = "إلغاء الحجز";
   static const rateService = "تقييم الخدمة";
+  static const bookingCancelled = "تم إلغاء الحجز بنجاح";
+  static const bookingStatusPending = "قيد الانتظار";
+  static const bookingStatusInProgress = "جاري التنفيذ";
+  static const bookingStatusCompleted = "مكتمل";
 
   //Payment
   static const paymentTitle = "الدفع";

@@ -18,6 +18,10 @@ class BookingCubit extends Cubit<BookingState> {
     emit(state.copyWith(service: newService));
   }
 
+  void changeStatus(String? newStatus) {  // ✅ هذه الدالة الجديدة
+    emit(state.copyWith(status: newStatus));
+  }
+
   Future<void> pickDate(BuildContext context) async {
     final d = await showDatePicker(
       context: context,
@@ -59,64 +63,68 @@ class BookingCubit extends Cubit<BookingState> {
     }
     return true;
   }
-
   Future<void> addBookingToFirestore(BuildContext context) async {
-    try {
-      final user = _auth.currentUser;
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please log in first.")),
-        );
-        return;
-      }
+  try {
+    final user = _auth.currentUser;
 
-      // 🔍 Format selected time and date
-      final selectedTime = "${state.time!.hour}:${state.time!.minute}";
-      final selectedDate = DateTime(
-        state.date!.year,
-        state.date!.month,
-        state.date!.day,
-      );
-
-      // 🧠 Check if this slot is already booked
-      final existing = await _firestore
-          .collectionGroup('bookings')
-          .where('date', isEqualTo: selectedDate.toIso8601String())
-          .where('time', isEqualTo: selectedTime)
-          .get();
-
-      if (existing.docs.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("⚠️ This time slot is already booked! Please choose another."),
-            backgroundColor: Colors.orange,
-          ),
-        );
-        return;
-      }
-
-      // ✅ Add new booking
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('bookings')
-          .add({
-        'service': state.service,
-        'date': selectedDate.toIso8601String(),
-        'time': selectedTime,
-        'address': state.address,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
+    if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("✅ Booking confirmed successfully!"),
-          backgroundColor: Colors.green,
+          content: Text("⚠️ يجب تسجيل الدخول أولًا."),
+          backgroundColor: Colors.orange,
         ),
       );
-    } catch (e) {
-      // ✅ هنا استخدمنا ملف الـ error handler بدل الرسالة العادية
-      handleFirebaseError(context, e);
+      return;
     }
+
+    // ✅ احفظ التاريخ كنص YYYY-MM-DD (أسهل للبحث والمقارنة)
+    final selectedDateString =
+        "${state.date!.year}-${state.date!.month}-${state.date!.day}";
+    final selectedTime = "${state.time!.hour}:${state.time!.minute}";
+
+    // ✅ تحقق إن الوقت مش محجوز
+    final existing = await _firestore
+        .collectionGroup('bookings')
+        .where('date', isEqualTo: selectedDateString)
+        .where('time', isEqualTo: selectedTime)
+        .get();
+
+    if (existing.docs.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("⚠️ هذا الوقت محجوز مسبقًا، اختر وقتًا آخر."),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    // ✅ أضف الحجز الجديد
+    await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .add({
+      'service': state.service,
+      'date': selectedDateString, // نص بدل Timestamp
+      'time': selectedTime,
+      'address': state.address,
+      'status': AppStrings.bookingStatusPending,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("✅ تم الحجز بنجاح!"),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } catch (e) {
+    handleFirebaseError(context, e);
   }
 }
+
+
+
+}
+

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
 
 class BookingConfirmButton extends StatelessWidget {
@@ -31,7 +30,7 @@ class BookingConfirmButton extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            AppStrings.confirmBooking,
+            "تأكيد الحجز", // 🟢 بالعربي
             style: TextStyle(
               color: Colors.white,
               fontSize: AppSize.s18.sp,
