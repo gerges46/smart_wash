@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_clean/core/constants/app_strings.dart';
 
 class StatusChip extends StatelessWidget {
   final String status;
@@ -7,7 +8,7 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPending = status == "جارٍ";
+    final isPending = status == AppStrings.bookingStatusPending;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -17,7 +18,7 @@ class StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Text(
-        status,
+        status.isNotEmpty ? status : "غير معروف", // ✅ تأمين إضافي
         style: TextStyle(
           color: isPending ? Colors.orange : Colors.green,
           fontWeight: FontWeight.bold,

@@ -7,14 +7,23 @@ import 'package:smart_clean/core/routes/app_router.dart';
 import 'package:smart_clean/features/user/booking/prebooking/widgets/booking_card.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
 
-class PreBookingView extends StatelessWidget {
+class PreBookingView extends StatefulWidget {
   const PreBookingView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // ✅ استدعاء الدالة أول ما تفتح الشاشة
-    context.read<BookingCubit>().getLastBooking();
+  State<PreBookingView> createState() => _PreBookingViewState();
+}
 
+class _PreBookingViewState extends State<PreBookingView> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ استدعاء الدالة مرة واحدة عند فتح الشاشة
+    context.read<BookingCubit>().getLastBooking();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<BookingCubit, BookingState>(
       builder: (context, state) {
         return Scaffold(

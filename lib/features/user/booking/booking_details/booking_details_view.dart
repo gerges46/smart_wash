@@ -138,11 +138,9 @@ class _BookingDetailsViewState extends State<BookingDetailsView> {
         context,
         Routes.bottomNavRoute,
         (route) => false,
-      );
-  },
-),
-
-
+                );
+                 },
+                  ),
                     SizedBox(width: AppMargin.m12.w),
                     BookingActionButton(
                       text: AppStrings.rateService,

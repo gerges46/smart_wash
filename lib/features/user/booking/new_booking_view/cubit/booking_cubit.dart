@@ -82,7 +82,6 @@ void changeService(String? newService) async {
     return true;
   }
 
-
 Future<void> addBookingToFirestore(BuildContext context) async {
   try {
     final user = _auth.currentUser;
@@ -106,36 +105,34 @@ Future<void> addBookingToFirestore(BuildContext context) async {
       'createdAt': FieldValue.serverTimestamp(),
       'isPaid': false,
       'isCancelled': false,
+      'status': AppStrings.bookingStatusPending, // 🟢 الحالة المبدئية للحجز
     });
 
     emit(state.copyWith(
       bookingId: bookingRef.id,
+      status: AppStrings.bookingStatusPending, // 🟢 نحدث الحالة في الـ state أيضًا
       isLoading: false,
     ));
 
     // ✅ رسالة نجاح للمستخدم
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("✅ تم إرسال الحجز بنجاح!"),
+        content: Text("✅ تم إرسال الحجز بنجاح وهو الآن قيد الانتظار."),
         backgroundColor: Colors.green,
         duration: Duration(seconds: 2),
       ),
     );
 
-    // بعد الحجز يروح لشاشة الدفع
-    
+    // 🔹 الانتقال إلى شاشة الدفع
     Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => PaymentView(bookingId: bookingRef.id),
-  ),
-);
-
-
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentView(bookingId: bookingRef.id),
+      ),
+    );
   } catch (e) {
     emit(state.copyWith(isLoading: false));
 
-    // ❌ رسالة خطأ للمستخدم
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("❌ حدث خطأ أثناء إرسال الحجز: $e"),
@@ -143,8 +140,6 @@ Future<void> addBookingToFirestore(BuildContext context) async {
         duration: const Duration(seconds: 3),
       ),
     );
-
-  
   }
 }
 
@@ -344,6 +339,47 @@ Future<void> confirmCashPayment(BuildContext context) async {
   } catch (e) {
     debugPrint("❌ خطأ أثناء تأكيد الدفع عند التنفيذ: $e");
     handleFirebaseError(context, e);
+  }
+}
+
+Future<void> getUserBookings() async {
+  emit(state.copyWith(isLoading: true));
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      emit(state.copyWith(isLoading: false, userBookings: []));
+      return;
+    }
+
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    // ✅ تحويل البيانات بدون مشاكل
+    final bookings = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return {
+        "id": doc.id,
+        "service": data['service'] ?? "غير محدد",
+        "price": "${data['price']} ج.م",
+        "date": data['date'] ?? "",
+        "time": data['time'] ?? "",
+        "status": data['status'] ?? "غير معروف",
+        "address": data['address'] ?? "", // مهم تضيفه لأنه موجود عندك
+      };
+    }).toList();
+
+    emit(state.copyWith(
+      userBookings: bookings,
+      isLoading: false,
+    ));
+    debugPrint("✅ تم تحميل الحجوزات بنجاح: ${bookings.length} حجوزات.");
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء تحميل الحجوزات: $e");
+    emit(state.copyWith(isLoading: false, userBookings: []));
   }
 }
 

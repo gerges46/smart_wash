@@ -12,6 +12,8 @@ class BookingState extends Equatable {
   final bool isPaying;
   final bool isPaid;
   final bool isCancelled;
+  final List<Map<String, dynamic>> userBookings;
+
 
 
   const BookingState({
@@ -27,6 +29,7 @@ class BookingState extends Equatable {
     this.isPaying = false,
     this.isPaid = false,
     this.isCancelled = false,
+    this.userBookings = const [], // ✅ أضفناها هنا
   });
 
   BookingState copyWith({
@@ -42,6 +45,8 @@ class BookingState extends Equatable {
     bool? isPaying,
     bool? isPaid,
     bool? isCancelled,
+    List<Map<String, dynamic>>? userBookings,
+
   }) {
     return BookingState(
       service: service ?? this.service,
@@ -56,6 +61,8 @@ class BookingState extends Equatable {
       isPaying: isPaying ?? this.isPaying,
       isPaid: isPaid ?? this.isPaid,
       isCancelled: isCancelled ?? this.isCancelled,
+      userBookings: userBookings ?? this.userBookings,
+
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_clean/core/routes/app_router.dart';
 
 part 'rating_state.dart';
 
@@ -20,7 +21,7 @@ class RatingCubit extends Cubit<RatingState> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text("شكراً لتقييمك!")));
-    Navigator.pop(context);
+    Navigator.pushNamedAndRemoveUntil(context, Routes.bottomNavRoute, (_) => false);
   }
 
   @override

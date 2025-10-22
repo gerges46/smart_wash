@@ -44,7 +44,7 @@ class BookingsList extends StatelessWidget {
               ),
             ),
             title: Text(
-              b['title'] as String,
+              b['service'] as String, // تم تعديلها من 'title'
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: AppSize.s16.sp,
@@ -56,7 +56,7 @@ class BookingsList extends StatelessWidget {
               children: [
                 SizedBox(height: AppSize.s4.h),
                 Text(
-                  b['datetime'] as String,
+                  "${b['date']} - ${b['time']}", // تم تعديلها من 'datetime'
                   style: TextStyle(
                     color: AppColors.darkGrey,
                     fontSize: AppSize.s13.sp,
@@ -69,6 +69,14 @@ class BookingsList extends StatelessWidget {
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: AppSize.s14.sp,
+                  ),
+                ),
+                SizedBox(height: AppSize.s4.h),
+                Text(
+                  "العنوان: ${b['address']}", // إضافي لعرض العنوان
+                  style: TextStyle(
+                    color: AppColors.darkGrey,
+                    fontSize: AppSize.s13.sp,
                   ),
                 ),
               ],
@@ -90,9 +98,7 @@ class BookingsList extends StatelessWidget {
                   child: Text(
                     b['status'] as String,
                     style: TextStyle(
-                      color: isCompleted
-                          ? AppColors.success
-                          : AppColors.warning,
+                      color: isCompleted ? AppColors.success : AppColors.warning,
                       fontWeight: FontWeight.w600,
                       fontSize: AppSize.s12.sp,
                     ),

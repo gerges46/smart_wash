@@ -1,20 +1,20 @@
-// lib/features/user/widgets/bottom_nav_shell.dart
 import 'package:flutter/material.dart';
 import 'package:smart_clean/features/user/booking/my_bookings/my_bookings_view.dart';
 import 'package:smart_clean/features/user/home/home_view.dart';
 import 'package:smart_clean/features/user/profile/profile_view.dart';
-import 'package:smart_clean/core/constants/app_color.dart';
 
-class BottomNavShell extends StatefulWidget {
-  const BottomNavShell({super.key});
+
+class BottomNavBarView extends StatefulWidget {
+  const BottomNavBarView({super.key});
 
   @override
-  State<BottomNavShell> createState() => _BottomNavShellState();
+  State<BottomNavBarView> createState() => _BottomNavBarViewState();
 }
 
-class _BottomNavShellState extends State<BottomNavShell> {
-  int _index = 0;
-  final List<Widget> _pages = const [
+class _BottomNavBarViewState extends State<BottomNavBarView> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
     HomeView(),
     MyBookingsView(),
     ProfileView(),
@@ -23,26 +23,18 @@ class _BottomNavShellState extends State<BottomNavShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_index],
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
-        backgroundColor: AppColors.white,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.darkGrey,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: "الرئيسية",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_online_outlined),
-            label: "حجوزاتي",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: "حسابي",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "الرئيسية"),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: "الحجوزات"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "الحساب"),
         ],
       ),
     );

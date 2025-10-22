@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
+import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
 import 'widgets/bookings_list.dart';
 import 'widgets/bookings_header.dart';
 
-class MyBookingsView extends StatelessWidget {
+class MyBookingsView extends StatefulWidget {
   const MyBookingsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bookings = [
-      {
-        "title": AppStrings.service2,
-        "datetime": "2025-10-20 10:00",
-        "status": "جارٍ",
-        "price": "150 ج.م",
-      },
-      {
-        "title": AppStrings.service3,
-        "datetime": "2025-09-12 14:00",
-        "status": "مكتمل",
-        "price": "300 ج.م",
-      },
-    ];
+  State<MyBookingsView> createState() => _MyBookingsViewState();
+}
 
+class _MyBookingsViewState extends State<MyBookingsView> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ نجيب الحجوزات مرة واحدة عند فتح الصفحة
+    context.read<BookingCubit>().getUserBookings();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const BookingsHeader(),
@@ -43,10 +42,27 @@ class MyBookingsView extends StatelessWidget {
               ),
             ),
             SizedBox(height: AppSize.s16.h),
-            Expanded(child: BookingsList(bookings: bookings)),
+            Expanded(
+              child: BlocBuilder<BookingCubit, BookingState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state.userBookings.isEmpty) {
+                    return const Center(
+                      child: Text("لا توجد حجوزات حالياً 😔"),
+                    );
+                  }
+
+                  return BookingsList(bookings: state.userBookings);
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

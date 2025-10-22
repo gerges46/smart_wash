@@ -5,13 +5,13 @@ import 'package:smart_clean/core/constants/app_color.dart';
 class InfoRow extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String value;
+  final String? value; // ✅ يقبل null بأمان
 
   const InfoRow({
     super.key,
     required this.icon,
     required this.title,
-    required this.value,
+    this.value,
   });
 
   @override
@@ -30,7 +30,7 @@ class InfoRow extends StatelessWidget {
         ),
         const Spacer(),
         Text(
-          value,
+          value ?? "غير محدد", // ✅ يمنع الخطأ لو null
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
