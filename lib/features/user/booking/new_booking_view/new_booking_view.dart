@@ -6,7 +6,6 @@ import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking
 import 'package:smart_clean/features/user/booking/new_booking_view/widgets/booking_confirm_button.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/widgets/booking_form.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/widgets/booking_header.dart';
-import 'package:smart_clean/features/user/booking/payment/payment_view.dart';
 
 class NewBookingView extends StatelessWidget {
   const NewBookingView({super.key});
@@ -28,30 +27,20 @@ class NewBookingView extends StatelessWidget {
                   const BookingHeader(),
                   SizedBox(height: 24.h),
                   BookingForm(
-                    service: state.service,
-                    date: state.date,
-                    time: state.time,
-                    onServiceChange: cubit.changeService,
-                    onPickDate: () => cubit.pickDate(context),
-                    onPickTime: () => cubit.pickTime(context),
-                    onAddressChange: cubit.changeAddress,
-                  ),
+                  service: state.service,
+                  price: state.price, // ✅
+                  date: state.date,
+                time: state.time,
+                onServiceChange: cubit.changeService,
+                onPickDate: () => cubit.pickDate(context),
+                onPickTime: () => cubit.pickTime(context),
+                onAddressChange: cubit.changeAddress,
+                 ),
                   SizedBox(height: 40.h),
                   BookingConfirmButton(
                     onConfirm: () async {
                       if (cubit.validateData(context)) {
                         await cubit.addBookingToFirestore(context);
-                        // 🟢 رسالة التأكيد بالعربي
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("✅ تم تأكيد الحجز بنجاح!"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const PaymentView()),
-                        );
                       }
                     },
                   ),

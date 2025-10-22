@@ -69,7 +69,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const PreBookingView());
 
       case Routes.paymentRoute:
-        return MaterialPageRoute(builder: (_) => const PaymentView());
+  return MaterialPageRoute(builder: (_) => const PaymentView(bookingId: ''));
+
 
       case Routes.myBookingsRoute:
         return MaterialPageRoute(builder: (_) => const MyBookingsView());

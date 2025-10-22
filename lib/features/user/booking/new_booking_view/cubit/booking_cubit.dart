@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
-import 'package:smart_clean/core/utils/error_handler.dart'; // ✅ استخدمنا ملف الأخطاء هنا
+import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/core/utils/error_handler.dart';
+import 'package:smart_clean/features/user/booking/payment/payment_view.dart';
 part 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
@@ -12,10 +14,27 @@ class BookingCubit extends Cubit<BookingState> {
 
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+void changeService(String? newService) async {
+  emit(state.copyWith(service: newService));
 
-  void changeService(String? newService) {
-    emit(state.copyWith(service: newService));
+  if (newService != null) {
+    try {
+      final snapshot = await _firestore
+          .collection('services')
+          .where('name', isEqualTo: newService)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final price = snapshot.docs.first['price'];
+        emit(state.copyWith(price: price.toDouble()));
+      }
+    } catch (e) {
+      debugPrint("❌ Error loading price: $e");
+    }
   }
+}
+
 
   void changeStatus(String? newStatus) {  // ✅ هذه الدالة الجديدة
     emit(state.copyWith(status: newStatus));
@@ -64,66 +83,73 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
 
-  Future<void> addBookingToFirestore(BuildContext context) async {
+Future<void> addBookingToFirestore(BuildContext context) async {
   try {
     final user = _auth.currentUser;
-
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("⚠️ يجب تسجيل الدخول أولًا."),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      handleFirebaseError(context, "⚠️ لم يتم تسجيل الدخول. من فضلك سجّل الدخول أولاً.");
       return;
     }
 
-    // ✅ احفظ التاريخ كنص YYYY-MM-DD (أسهل للبحث والمقارنة)
-    final selectedDateString =
-        "${state.date!.year}-${state.date!.month}-${state.date!.day}";
-    final selectedTime = "${state.time!.hour}:${state.time!.minute}";
+    emit(state.copyWith(isLoading: true));
 
-    // ✅ تحقق إن الوقت مش محجوز
-    final existing = await _firestore
-        .collectionGroup('bookings')
-        .where('date', isEqualTo: selectedDateString)
-        .where('time', isEqualTo: selectedTime)
-        .get();
-
-    if (existing.docs.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("⚠️ هذا الوقت محجوز مسبقًا، اختر وقتًا آخر."),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
-    }
-
-    // ✅ أضف الحجز الجديد
-    await _firestore
+    final bookingRef = await _firestore
         .collection('users')
         .doc(user.uid)
         .collection('bookings')
         .add({
       'service': state.service,
-      'date': selectedDateString, // نص بدل Timestamp
-      'time': selectedTime,
+      'price': state.price,
+      'date': state.date?.toIso8601String(),
+      'time': state.time?.format(context),
       'address': state.address,
-      'status': AppStrings.bookingStatusPending,
       'createdAt': FieldValue.serverTimestamp(),
+      'isPaid': false,
+      'isCancelled': false,
     });
 
+    emit(state.copyWith(
+      bookingId: bookingRef.id,
+      isLoading: false,
+    ));
+
+    // ✅ رسالة نجاح للمستخدم
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("✅ تم الحجز بنجاح!"),
+        content: Text("✅ تم إرسال الحجز بنجاح!"),
         backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       ),
     );
+
+    // بعد الحجز يروح لشاشة الدفع
+    
+    Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => PaymentView(bookingId: bookingRef.id),
+  ),
+);
+
+
   } catch (e) {
-    handleFirebaseError(context, e);
+    emit(state.copyWith(isLoading: false));
+
+    // ❌ رسالة خطأ للمستخدم
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("❌ حدث خطأ أثناء إرسال الحجز: $e"),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+
+  
   }
 }
+
+
+
 
 Future<void> getLastBooking() async {
   emit(state.copyWith(isLoading: true));
@@ -156,5 +182,172 @@ Future<void> getLastBooking() async {
   }
 }
 
+
+Future<void> pay(BuildContext context) async {
+  try {
+    emit(state.copyWith(isPaying: true));
+
+    final user = _auth.currentUser;
+    if (user == null || state.bookingId == null) return;
+
+    await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .doc(state.bookingId)
+        .update({'isPaid': true}); // ✅ تم الدفع
+
+    emit(state.copyWith(isPaying: false, isPaid: true));
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("تم الدفع بنجاح ✅")),
+      );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.bookingDetailsRoute,
+        (route) => false,
+      );
+    }
+  } catch (e) {
+    emit(state.copyWith(isPaying: false));
+    handleFirebaseError(context, e);
+  }
+}
+
+Future<void> cancelBooking(BuildContext context) async {
+  try {
+    final user = _auth.currentUser;
+    final bookingId = state.bookingId;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ لم يتم العثور على مستخدم مسجل الدخول")),
+      );
+      return;
+    }
+
+    if (bookingId == null || bookingId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ لم يتم العثور على رقم الحجز لإلغائه")),
+      );
+      return;
+    }
+
+    final docRef = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .doc(bookingId);
+
+    final doc = await docRef.get();
+
+    if (!doc.exists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ لا يمكن إلغاء هذا الحجز لأنه غير موجود.")),
+      );
+      return;
+    }
+
+    await docRef.delete();
+    emit(state.copyWith(isCancelled: true));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("✅ تم إلغاء الحجز بنجاح"),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء حذف الحجز: $e");
+    handleFirebaseError(context, e);
+  }
+}
+
+
+
+Future<bool> confirmExit(BuildContext context) async {
+  if (state.isPaid || state.isCancelled) return true;
+
+  bool confirmExit = false;
+  await showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text("تأكيد الخروج"),
+      content: const Text("هل تريد إلغاء الحجز؟ سيتم حذفه إن خرجت الآن."),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text("إلغاء"),
+        ),
+        TextButton(
+          onPressed: () {
+            confirmExit = true;
+            Navigator.pop(context, true);
+          },
+          child: const Text("تأكيد"),
+        ),
+      ],
+    ),
+  );
+
+  if (confirmExit) {
+    await cancelBooking(context);
+  }
+
+  return confirmExit;
+}
+
+
+  /// 🟢 لتخزين الـ bookingId عند فتح صفحة الدفع
+  void setBookingId(String id) {
+    emit(state.copyWith(bookingId: id));
+  }
+
+  
+Future<void> confirmCashPayment(BuildContext context) async {
+  try {
+    final user = _auth.currentUser;
+    final bookingId = state.bookingId;
+
+    if (user == null || bookingId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ لم يتم العثور على بيانات الحجز")),
+      );
+      return;
+    }
+
+    await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .doc(bookingId)
+        .update({
+      'isPaid': false,
+      'paymentMethod': 'cash',
+      'status': 'confirmed',
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("✅ تم تأكيد الدفع عند التنفيذ."),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      Routes.bookingDetailsRoute,
+      (route) => false,
+    );
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء تأكيد الدفع عند التنفيذ: $e");
+    handleFirebaseError(context, e);
+  }
+}
+
+
+  
 }
 

@@ -4,9 +4,9 @@ import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/widgets/custom_card.dart';
-
 class BookingForm extends StatelessWidget {
   final String? service;
+  final double? price; // ✅ السعر الجديد
   final DateTime? date;
   final TimeOfDay? time;
   final Function(String?) onServiceChange;
@@ -17,6 +17,7 @@ class BookingForm extends StatelessWidget {
   const BookingForm({
     super.key,
     required this.service,
+    required this.price, // ✅
     required this.date,
     required this.time,
     required this.onServiceChange,
@@ -63,6 +64,23 @@ class BookingForm extends StatelessWidget {
           ),
         ),
 
+        /// ------------------ Price ------------------
+        if (price != null)
+          Padding(
+            padding: EdgeInsets.only(top: 10.h),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "السعر: ${price!.toStringAsFixed(2)} ريال 💰", // ✅ عرض السعر بالريال
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+
         SizedBox(height: AppMargin.m16.h),
 
         /// ------------------ Date & Time ------------------
@@ -72,10 +90,7 @@ class BookingForm extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onPickDate,
-                  icon: const Icon(
-                    Icons.calendar_today,
-                    color: AppColors.primary,
-                  ),
+                  icon: const Icon(Icons.calendar_today, color: AppColors.primary),
                   label: Text(
                     date == null
                         ? AppStrings.selectDate
@@ -93,9 +108,7 @@ class BookingForm extends StatelessWidget {
                   onPressed: onPickTime,
                   icon: const Icon(Icons.access_time, color: AppColors.primary),
                   label: Text(
-                    time == null
-                        ? AppStrings.selectTime
-                        : time!.format(context),
+                    time == null ? AppStrings.selectTime : time!.format(context),
                     style: const TextStyle(
                       fontSize: AppSize.s16,
                       color: Colors.black,
