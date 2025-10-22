@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/utils/error_handler.dart'; // ✅ استخدمنا ملف الأخطاء هنا
-
 part 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
@@ -55,7 +54,7 @@ class BookingCubit extends Cubit<BookingState> {
     if (state.service == null ||
         state.date == null ||
         state.time == null ||
-        state.address.trim().isEmpty) {
+        state.address!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(AppStrings.completeData)),
       );
@@ -63,6 +62,8 @@ class BookingCubit extends Cubit<BookingState> {
     }
     return true;
   }
+
+
   Future<void> addBookingToFirestore(BuildContext context) async {
   try {
     final user = _auth.currentUser;
@@ -124,7 +125,36 @@ class BookingCubit extends Cubit<BookingState> {
   }
 }
 
+Future<void> getLastBooking() async {
+  emit(state.copyWith(isLoading: true));
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      emit(state.copyWith(isLoading: false));
+      return;
+    }
 
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .orderBy('createdAt', descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      emit(state.copyWith(
+        lastBooking: snapshot.docs.first.data(),
+        isLoading: false,
+      ));
+    } else {
+      emit(state.copyWith(lastBooking: null, isLoading: false));
+    }
+  } catch (e) {
+    debugPrint("❌ Error loading last booking: $e");
+    emit(state.copyWith(isLoading: false));
+  }
+}
 
 }
 

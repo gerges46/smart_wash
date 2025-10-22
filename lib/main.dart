@@ -31,10 +31,11 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => BookingDetailsCubit()),
-        BlocProvider(create: (_) => BookingCubit()),
+        BlocProvider(create: (_) => BookingCubit()..getLastBooking()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => HomeCubit()..fetchServices()),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.loginRoute,
+        initialRoute: Routes.bottomNavRoute,
       ),
     );
   }
