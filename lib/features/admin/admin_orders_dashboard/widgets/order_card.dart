@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/core/constants/value_manager.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/core/utils/date_time_formatter.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/admin_dashboard_helper.dart';
 
 class OrderCard extends StatelessWidget {
-  final Map<String, String> order;
+  final Map<String, dynamic> order;
   const OrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
-    final status = order["status"]!;
+    final status = order["status"] ?? "";
     final statusColor = AdminDashboardHelper.getStatusColor(status);
     final statusIcon = AdminDashboardHelper.getStatusIcon(status);
 
+    // ✅ تنسيق التاريخ والوقت بشكل مفهوم
+    final formattedDateTime =
+        formatDateTime(order["date"], order["time"]);
+
     return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s16),
+      borderRadius: BorderRadius.circular(16.r),
       onTap: () {
-        Navigator.pushNamed(context, Routes.adminOrderDetails, arguments: order);
+        // ✅ الانتقال إلى شاشة تفاصيل الطلب مع تمرير بيانات الحجز
+        Navigator.pushNamed(
+          context,
+          Routes.adminOrderDetails,
+          arguments: order,
+        );
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+      child: Container(
         margin: EdgeInsets.only(bottom: 14.h),
         padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(AppSize.s16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black12,
@@ -48,7 +56,7 @@ class OrderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    order["client"]!,
+                    order["client"] ?? "غير معروف",
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -56,11 +64,22 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 4.h),
+                  
+                  // ✅ التاريخ والوقت بصيغة مفهومة
                   Text(
-                    "${order["service"]}  •  ${order["time"]}",
+                    "${order["service"] ?? ""}  •  $formattedDateTime",
                     style: TextStyle(
                       fontSize: 13.sp,
                       color: Colors.grey[600],
+                    ),
+                  ),
+
+                  SizedBox(height: 4.h),
+                  Text(
+                    "السعر: ${order["price"] ?? ""}  •  العنوان: ${order["address"] ?? ""}",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colors.grey[700],
                     ),
                   ),
                 ],

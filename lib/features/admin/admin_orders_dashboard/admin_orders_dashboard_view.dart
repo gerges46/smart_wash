@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
+import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboard_cubit.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/cubit/dashboard_state.dart';
@@ -10,18 +11,24 @@ import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/dashbo
 import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/dashboard_summary.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/widgets/order_card.dart';
 
-class AdminDashboardView extends StatelessWidget {
+class AdminDashboardView extends StatefulWidget {
   const AdminDashboardView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final orders = AdminDashboardHelper.orders;
-    final completedCount =
-        orders.where((e) => e["status"] == "Completed").length;
-    final pendingCount =
-        orders.where((e) => e["status"] == "Pending").length;
+  State<AdminDashboardView> createState() => _AdminDashboardViewState();
+}
 
-    return BlocListener<DashboardCubit, DashboardState>(
+class _AdminDashboardViewState extends State<AdminDashboardView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<DashboardCubit>().fetchAllBookings();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<DashboardCubit, DashboardState>(
       listener: (context, state) {
         if (state.error != null && state.error!.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -34,33 +41,48 @@ class AdminDashboardView extends StatelessWidget {
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: const DashboardAppBar(),
-        body: Column(
-          children: [
-            DashboardSummary(
-              total: orders.length,
-              completed: completedCount,
-              pending: pendingCount,
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  final order = orders[index];
-                  return OrderCard(order: order);
-                },
+      builder: (context, state) {
+        final bookings = state.adminBookings; 
+        final completedCount =
+            bookings.where((e) => e["status"] == AppStrings.bookingStatusCompleted).length;
+        final pendingCount =
+            bookings.where((e) => e["status"] == AppStrings.bookingStatusPending).length;
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: const DashboardAppBar(),
+          body: Column(
+            children: [
+              DashboardSummary(
+                total: bookings.length,
+                completed: completedCount,
+                pending: pendingCount,
               ),
-            ),
-          ],
-        ),
-        floatingActionButton: Column(
+              Expanded(
+                child: state.loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : bookings.isEmpty
+                        ? const Center(child: Text("لا توجد حجوزات حتى الآن"))
+                        : ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            itemCount: bookings.length,
+                            itemBuilder: (context, index) {
+                              final order = bookings[index];
+                             AdminDashboardHelper.getStatusColor(order['status']);
+                             AdminDashboardHelper.getStatusIcon(order['status']);
+
+                              return OrderCard(order: order); // استخدمنا OrderCard جاهز
+                            },
+                          ),
+              ),
+            ],
+          ),
+          floatingActionButton: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             FloatingActionButton.extended(
               backgroundColor: AppColors.secondary,
+              heroTag: "fab1", // ✅ حل الخطأ
               onPressed: () {
                 final parentContext = context; // نستخدمه داخل الـDialog
                 showDialog(
@@ -245,6 +267,7 @@ class AdminDashboardView extends StatelessWidget {
             const SizedBox(height: 10),
             FloatingActionButton.extended(
               backgroundColor: AppColors.primary,
+              heroTag: "fab2", // ✅ حل الخطأ
               onPressed: () {
                 Navigator.pushNamed(context, Routes.adminSchedule);
               },
@@ -256,7 +279,9 @@ class AdminDashboardView extends StatelessWidget {
             ),
           ],
         ),
-      ),
+        );
+      },
     );
   }
 }
+

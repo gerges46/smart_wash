@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
+import 'package:smart_clean/core/constants/app_strings.dart';
 
 class DashboardSummary extends StatelessWidget {
   final int total;
@@ -41,9 +42,9 @@ class DashboardSummary extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildStatItem("Total", total.toString()),
-          _buildStatItem("Completed", completed.toString()),
-          _buildStatItem("Pending", pending.toString()),
+          _buildStatItem(AppStrings.total, total.toString()),
+          _buildStatItem(AppStrings.bookingStatusCompleted, completed.toString()),
+          _buildStatItem(AppStrings.bookingStatusPending, pending.toString()),
         ],
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
-import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/core/utils/date_time_formatter.dart';
 
 class BookingsList extends StatelessWidget {
   final List<Map<String, dynamic>> bookings;
@@ -51,36 +51,37 @@ class BookingsList extends StatelessWidget {
                 color: AppColors.primary,
               ),
             ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: AppSize.s4.h),
-                Text(
-                  "${b['date']} - ${b['time']}", // تم تعديلها من 'datetime'
-                  style: TextStyle(
-                    color: AppColors.darkGrey,
-                    fontSize: AppSize.s13.sp,
-                  ),
-                ),
-                SizedBox(height: AppSize.s6.h),
-                Text(
-                  "السعر: ${b['price']}",
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: AppSize.s14.sp,
-                  ),
-                ),
-                SizedBox(height: AppSize.s4.h),
-                Text(
-                  "العنوان: ${b['address']}", // إضافي لعرض العنوان
-                  style: TextStyle(
-                    color: AppColors.darkGrey,
-                    fontSize: AppSize.s13.sp,
-                  ),
-                ),
-              ],
+                    subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: AppSize.s4.h),
+            Text(
+              formatDateTime(b['date'], b['time']), // استخدمنا الدالة هنا
+              style: TextStyle(
+                color: AppColors.darkGrey,
+                fontSize: AppSize.s13.sp,
+              ),
             ),
+    SizedBox(height: AppSize.s6.h),
+    Text(
+      "السعر: ${b['price']}",
+      style: TextStyle(
+        color: AppColors.primary,
+        fontWeight: FontWeight.bold,
+        fontSize: AppSize.s14.sp,
+      ),
+    ),
+    SizedBox(height: AppSize.s4.h),
+    Text(
+      "العنوان: ${b['address']}",
+      style: TextStyle(
+        color: AppColors.darkGrey,
+        fontSize: AppSize.s13.sp,
+      ),
+    ),
+  ],
+),
+
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -105,16 +106,10 @@ class BookingsList extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: AppSize.s8.h),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: AppColors.primary,
-                  size: AppSize.s16.sp,
-                ),
+              
               ],
             ),
-            onTap: () {
-              Navigator.pushNamed(context, Routes.bookingDetailsRoute);
-            },
+            
           ),
         );
       },

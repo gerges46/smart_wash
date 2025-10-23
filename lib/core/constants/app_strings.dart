@@ -104,6 +104,7 @@ class AppStrings {
   static const bookingStatusPending = "قيد الانتظار";
   static const bookingStatusInProgress = "جاري التنفيذ";
   static const bookingStatusCompleted = "مكتمل";
+  static const total= "الإجمالي";
 
   //Payment
   static const paymentTitle = "الدفع";

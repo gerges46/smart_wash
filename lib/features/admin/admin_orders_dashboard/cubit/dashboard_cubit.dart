@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
@@ -55,6 +56,66 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
+  Future<void> fetchAllBookings() async {
+  emit(state.copyWith(loading: true));
+  try {
+    // جلب كل الحجوزات من كل المستخدمين
+    final snapshot = await _firestore.collectionGroup('bookings').orderBy('createdAt', descending: true).get();
+
+    final bookings = await Future.wait(snapshot.docs.map((doc) async {
+      final data = doc.data();
+
+      // جلب معلومات المستخدم الأب
+      final userDoc = await doc.reference.parent.parent?.get();
+      final userData = userDoc?.data();
+
+      return {
+        "id": doc.id,
+        "userId": doc.reference.parent.parent?.id ?? "",
+        "client": userData?['name'] ?? "غير معروف",
+        "email": userData?['email'] ?? "",
+        "service": data['service'] ?? "غير محدد",
+        "price": "${data['price'] ?? 0} ج.م",
+        "date": data['date'] ?? "",
+        "time": data['time'] ?? "",
+        "status": data['status'] ?? "غير معروف",
+        "address": data['address'] ?? "",
+        "isPaid": data['isPaid'] ?? false,
+        "isCancelled": data['isCancelled'] ?? false,
+        "createdAt": data['createdAt'] ?? null,
+      };
+    }).toList());
+
+    emit(state.copyWith(adminBookings: bookings, loading: false));
+    debugPrint("✅ تم تحميل جميع الحجوزات: ${bookings.length}");
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء تحميل جميع الحجوزات: $e");
+    emit(state.copyWith(loading: false, adminBookings: []));
+  }
+}
+
+Future<void> updateBooking({
+  required String userId,
+  required String bookingId,
+  required Map<String, dynamic> updatedData,
+}) async {
+  try {
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('bookings')
+        .doc(bookingId)
+        .update(updatedData);
+
+    debugPrint("✅ تم تحديث بيانات الحجز بنجاح");
+    fetchAllBookings(); // لتحديث القائمة بعد التعديل
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء تحديث بيانات الحجز: $e");
+    emit(state.copyWith(error: "فشل تحديث البيانات"));
+  }
+}
+
+  
   // 🧠 دالة لتحويل الأخطاء إلى رسائل مفهومة للمستخدم
   String _mapErrorToMessage(Object e) {
     final error = e.toString();

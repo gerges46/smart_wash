@@ -94,10 +94,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const AdminDashboardView());
 
       case Routes.adminOrderDetails:
-        return MaterialPageRoute(
-          builder: (_) =>
-              AdminOrderDetailsView(order: settings.arguments as Map),
-        );
+  final order = settings.arguments as Map<String, dynamic>;
+  return MaterialPageRoute(
+    builder: (_) => AdminOrderDetailsView(order: order),
+  );
+
 
       case Routes.adminSchedule:
         return MaterialPageRoute(builder: (_) => const AdminScheduleView());

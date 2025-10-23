@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => BookingCubit()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => DashboardCubit()),
-        BlocProvider(create: (_) => HomeCubit()..fetchServices()),
+        BlocProvider(create: (_) => HomeCubit()),
 
       ],
       child: MaterialApp(
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.bottomNavRoute,
+        initialRoute: Routes.adminDashboard,
       ),
     );
   }

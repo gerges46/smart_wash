@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'widgets/greeting_card.dart';
 import 'widgets/action_buttons.dart';
 import 'widgets/services_section.dart';
 import 'widgets/why_us_section.dart';
+import '../home/cubit/home_cubit.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ تنفيذ الدالة هنا بدل ما تكون في BlocProvider في main.dart
+    context.read<HomeCubit>().fetchServices();
+  }
 
   @override
   Widget build(BuildContext context) {
