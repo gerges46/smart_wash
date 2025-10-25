@@ -143,7 +143,12 @@ class _BookingDetailsViewState extends State<BookingDetailsView> {
                     BookingActionButton(
                       text: AppStrings.rateService,
                       onTap: () =>
-                          Navigator.pushNamed(context, Routes.ratingRoute),
+                          // من الـ BookingDetails أو MyBookings
+                        Navigator.pushNamed(
+                          context,
+                          Routes.ratingRoute,
+                          arguments: state.bookingId, // هنا بتمرر الـ bookingId
+                        ),
                     ),
                   ],
                 ),

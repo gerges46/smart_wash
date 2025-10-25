@@ -20,13 +20,28 @@ class NoteField extends StatelessWidget {
         ],
       ),
       padding: EdgeInsets.all(16.w),
-      child: TextField(
-        controller: controller,
-        maxLines: 5,
-        decoration: const InputDecoration(
-          hintText: "اكتب ملاحظاتك هنا...",
-          border: InputBorder.none,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "ملاحظات إضافية (اختياري)",
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          TextField(
+            controller: controller,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              hintText: "اكتب ملاحظاتك هنا...",
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/features/user/booking/rating_view/cubit/rating_cubit.dart';
-import 'package:smart_clean/features/user/booking/rating_view/widgets/note_field.dart';
-import 'package:smart_clean/features/user/booking/rating_view/widgets/rating_card.dart';
-import 'package:smart_clean/features/user/booking/rating_view/widgets/submit_button.dart';
+import 'package:smart_clean/features/user/booking/rating_view/widgets/rating_body.dart';
 
 class RatingView extends StatelessWidget {
-  const RatingView({super.key});
+  final String bookingId;
+  
+  const RatingView({super.key, required this.bookingId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RatingCubit(),
+      create: (_) => RatingCubit(bookingId: bookingId),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: Container(
@@ -30,54 +28,12 @@ class RatingView extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: _RatingBody(),
+                child: RatingBody(),
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class _RatingBody extends StatelessWidget {
-  const _RatingBody();
-
-  @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<RatingCubit>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppStrings.shareOpinion,
-          style: TextStyle(
-            fontSize: 28.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
-        ),
-        SizedBox(height: 20.h),
-
-        /// 🔹 Rating card
-        RatingCard(),
-
-        SizedBox(height: 25.h),
-
-        /// 🔹 Notes Field
-        NoteField(controller: cubit.noteController),
-
-        SizedBox(height: 30.h),
-
-        /// 🔹 Submit button
-        SubmitButton(
-          onPressed: () {
-            cubit.submit(context);
-          },
-        ),
-
-        SizedBox(height: 60.h),
-      ],
     );
   }
 }

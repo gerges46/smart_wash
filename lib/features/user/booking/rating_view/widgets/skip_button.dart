@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 
-class SubmitButton extends StatelessWidget {
+class SkipButton extends StatelessWidget {
   final VoidCallback? onPressed; // غيرت لـ nullable
   final bool isLoading;
   
-  const SubmitButton({
+  const SkipButton({
     super.key, 
     required this.onPressed, // أو required this.onPressed? لو عايز تجعله optional
     this.isLoading = false
@@ -15,41 +15,34 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isLoading ? null : onPressed, // هنا تمام
+      onTap: isLoading ? null : onPressed,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 18.h),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.r),
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          color: Colors.transparent,
+          border: Border.all(
+            color: AppColors.primary.withOpacity(0.5),
+            width: 2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
         ),
         child: Center(
           child: isLoading
               ? SizedBox(
-                  height: 20.h,
-                  width: 20.h,
+                  height: 18.h,
+                  width: 18.h,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: AppColors.primary,
                     strokeWidth: 2,
                   ),
                 )
               : Text(
-                  "إرسال التقييم",
+                  "تخطي التقييم",
                   style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
                   ),
                 ),
         ),

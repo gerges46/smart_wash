@@ -82,7 +82,15 @@ class RouteGenerator {
         );
 
       case Routes.ratingRoute:
-        return MaterialPageRoute(builder: (_) => const RatingView());
+        final args = settings.arguments;
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => RatingView(bookingId: args),
+          );
+        } else {
+          // Handle error أو ترجع لشاشة أخرى
+          return MaterialPageRoute(builder: (_) => const BottomNavShell());
+        }
 
       case Routes.bottomNavRoute:
         return MaterialPageRoute(builder: (_) => const BottomNavShell());
