@@ -11,34 +11,98 @@ class AuthCubit extends Cubit<AuthState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AuthCubit() : super(AuthInitial());
-  
-Future<void> registerUser({
+ Future<void> registerUser({
   required String name,
   required String email,
-  required String phone, // ← جديد
+  required String phone,
   required String password,
 }) async {
   emit(AuthLoading());
   try {
-    UserCredential cred = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    // 🟡 الخطوة 1: نحاول نجيب المستخدم الحالي لو موجود
+    User? existingUser = _auth.currentUser;
 
-    await _firestore.collection('users').doc(cred.user!.uid).set({
+    // 🟢 الخطوة 2: لو المستخدم مش موجود → نسجله
+    if (existingUser == null) {
+      UserCredential cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // إرسال رسالة التحقق بالبريد
+      await cred.user!.sendEmailVerification();
+
+      // نعمل تسجيل خروج بعد الإرسال
+      await _auth.signOut();
+
+      emit(AuthFailure(
+        message:
+            "تم إرسال رسالة تحقق إلى بريدك الإلكتروني. من فضلك فعّل حسابك ثم سجّل الدخول.",
+      ));
+      return;
+    }
+
+    // 🟢 الخطوة 3: لو المستخدم موجود بالفعل
+    await existingUser.reload(); // نحدث بياناته من السيرفر
+    if (!existingUser.emailVerified) {
+      emit(AuthFailure(
+        message:
+            "يجب تأكيد بريدك الإلكتروني أولاً. تحقق من بريدك واضغط على رابط التفعيل.",
+      ));
+      return;
+    }
+
+    // 🟢 الخطوة 4: لو البريد متحقق منه → نحفظه في Firestore
+    await _firestore.collection('users').doc(existingUser.uid).set({
       'name': name,
       'email': email,
-      'phone': phone, // ← حفظ الرقم
+      'phone': phone,
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    emit(AuthSuccess(user: cred.user!, isAdmin: false));
+    emit(AuthSuccess(user: existingUser, isAdmin: false));
   } on FirebaseAuthException catch (e) {
+    // لو البريد موجود بالفعل، نعمل فحص للتحقق بدل ما نرمي خطأ
+    if (e.code == 'email-already-in-use') {
+      try {
+        // نسجل الدخول بالبريد القديم ونفحص التحقق
+        UserCredential cred = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        await cred.user!.reload();
+        if (!cred.user!.emailVerified) {
+          await _auth.signOut();
+          emit(AuthFailure(
+            message:
+                "هذا البريد مسجل مسبقًا ولم يتم تفعيله بعد. تحقق من بريدك واضغط على رابط التفعيل.",
+          ));
+          return;
+        }
+
+        // البريد متحقق منه
+        await _firestore.collection('users').doc(cred.user!.uid).set({
+          'name': name,
+          'email': email,
+          'phone': phone,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        emit(AuthSuccess(user: cred.user!, isAdmin: false));
+        return;
+      } catch (e2) {
+        emit(AuthFailure(message: "فشل تسجيل الدخول بالبريد المسجل مسبقًا."));
+        return;
+      }
+    }
+
     emit(AuthFailure(message: getFriendlyErrorMessage(e.code)));
   } catch (e) {
     emit(AuthFailure(message: getFriendlyErrorMessage(e.toString())));
   }
 }
+
 
 
   // 🟣 تسجيل الدخول
