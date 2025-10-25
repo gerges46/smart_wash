@@ -5,15 +5,15 @@ import 'package:smart_clean/features/auth/register/widgets/register_button.dart'
 import 'package:smart_clean/features/auth/register/widgets/register_form.dart';
 import 'package:smart_clean/features/auth/register/widgets/register_header.dart';
 
+// ✅ RegisterView
 class RegisterView extends StatelessWidget {
   RegisterView({super.key});
 
-  // 🔹 تعريف controllers هنا فقط
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController(); // ← جديد
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,20 +28,20 @@ class RegisterView extends StatelessWidget {
               const RegisterHeader(),
               SizedBox(height: 32.h),
 
-              // 🔸 نمرر controllers للفورم
               RegisterForm(
                 nameController: nameController,
                 emailController: emailController,
+                phoneController: phoneController, // ← أضفنا هنا
                 passwordController: passwordController,
                 confirmPasswordController: confirmPasswordController,
               ),
 
               SizedBox(height: 24.h),
 
-              // 🔸 ونمرر نفس controllers للزرار
               RegisterButton(
                 nameController: nameController,
                 emailController: emailController,
+                phoneController: phoneController, // ← وأضفنا هنا كمان
                 passwordController: passwordController,
                 confirmPasswordController: confirmPasswordController,
               ),
@@ -52,3 +52,5 @@ class RegisterView extends StatelessWidget {
     );
   }
 }
+
+

@@ -11,33 +11,35 @@ class AuthCubit extends Cubit<AuthState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AuthCubit() : super(AuthInitial());
+  
+Future<void> registerUser({
+  required String name,
+  required String email,
+  required String phone, // ← جديد
+  required String password,
+}) async {
+  emit(AuthLoading());
+  try {
+    UserCredential cred = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-  // 🟢 تسجيل مستخدم جديد
-  Future<void> registerUser({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    emit(AuthLoading());
-    try {
-      UserCredential cred = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    await _firestore.collection('users').doc(cred.user!.uid).set({
+      'name': name,
+      'email': email,
+      'phone': phone, // ← حفظ الرقم
+      'createdAt': FieldValue.serverTimestamp(),
+    });
 
-      await _firestore.collection('users').doc(cred.user!.uid).set({
-        'name': name,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      emit(AuthSuccess(user: cred.user!, isAdmin: false));
-    } on FirebaseAuthException catch (e) {
-      emit(AuthFailure(message: getFriendlyErrorMessage(e.code)));
-    } catch (e) {
-      emit(AuthFailure(message: getFriendlyErrorMessage(e.toString())));
-    }
+    emit(AuthSuccess(user: cred.user!, isAdmin: false));
+  } on FirebaseAuthException catch (e) {
+    emit(AuthFailure(message: getFriendlyErrorMessage(e.code)));
+  } catch (e) {
+    emit(AuthFailure(message: getFriendlyErrorMessage(e.toString())));
   }
+}
+
 
   // 🟣 تسجيل الدخول
   Future<void> loginUser({
@@ -70,6 +72,19 @@ class AuthCubit extends Cubit<AuthState> {
     await _auth.signOut();
     emit(AuthLoggedOut());
   }
+
+  Future<void> resetPassword(String email) async {
+  emit(AuthPasswordResetEmailSentLoading());
+  try {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    emit(AuthPasswordResetEmailSentSuccess());
+  } on FirebaseAuthException catch (e) {
+    emit(AuthPasswordResetEmailSentFailure(message: getFriendlyErrorMessage(e.code)));
+  } catch (e) {
+    emit(AuthPasswordResetEmailSentFailure(message: 'حدث خطأ أثناء إرسال رابط إعادة التعيين.'));
+  }
+}
+
 
   // 🟡 ترجمة أكواد الأخطاء من Firebase
   String getFriendlyErrorMessage(String errorCode) {

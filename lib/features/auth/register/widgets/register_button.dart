@@ -11,6 +11,7 @@ import 'package:smart_clean/features/auth/cubit/auth_state.dart';
 class RegisterButton extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController emailController;
+  final TextEditingController phoneController; // ← جديد
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
 
@@ -18,6 +19,7 @@ class RegisterButton extends StatelessWidget {
     super.key,
     required this.nameController,
     required this.emailController,
+    required this.phoneController, // ← جديد
     required this.passwordController,
     required this.confirmPasswordController,
   });
@@ -36,7 +38,6 @@ class RegisterButton extends StatelessWidget {
                 ? "تم تسجيل دخول الأدمن بنجاح!"
                 : "تم إنشاء الحساب بنجاح!",
             btnOkText: "متابعة",
-
             btnOkOnPress: () {
               if (state.isAdmin) {
                 Navigator.pushNamedAndRemoveUntil(
@@ -60,7 +61,6 @@ class RegisterButton extends StatelessWidget {
             animType: AnimType.scale,
             title: "حدث خطأ 😕",
             desc: state.message,
-
             btnOkText: "حسناً",
             btnOkOnPress: () {},
           ).show();
@@ -78,13 +78,15 @@ class RegisterButton extends StatelessWidget {
                     : () {
                         final name = nameController.text.trim();
                         final email = emailController.text.trim();
+                        final phone = phoneController.text.trim();
                         final password = passwordController.text.trim();
-                        final confirmPassword = confirmPasswordController.text
-                            .trim();
+                        final confirmPassword =
+                            confirmPasswordController.text.trim();
 
                         // ✅ التحقق من الحقول الفارغة
                         if (name.isEmpty ||
                             email.isEmpty ||
+                            phone.isEmpty ||
                             password.isEmpty ||
                             confirmPassword.isEmpty) {
                           AwesomeDialog(
@@ -93,6 +95,22 @@ class RegisterButton extends StatelessWidget {
                             animType: AnimType.scale,
                             title: "تنبيه ⚠️",
                             desc: "من فضلك املأ جميع الحقول قبل المتابعة.",
+                            btnOkText: "حسناً",
+                            btnOkOnPress: () {},
+                          ).show();
+                          return;
+                        }
+
+                        // ✅ التحقق من تنسيق رقم الهاتف
+                        final phoneRegex = RegExp(r'^[0-9]{10,11}$');
+                        if (!phoneRegex.hasMatch(phone)) {
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.warning,
+                            animType: AnimType.scale,
+                            title: "رقم الهاتف غير صالح 📱",
+                            desc:
+                                "من فضلك أدخل رقم هاتف صحيح مكون من 10 أو 11 رقم.",
                             btnOkText: "حسناً",
                             btnOkOnPress: () {},
                           ).show();
@@ -115,10 +133,11 @@ class RegisterButton extends StatelessWidget {
 
                         // ✅ تنفيذ التسجيل
                         context.read<AuthCubit>().registerUser(
-                          name: name,
-                          email: email,
-                          password: password,
-                        );
+                              name: name,
+                              email: email,
+                              phone: phone,
+                              password: password,
+                            );
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,

@@ -9,6 +9,7 @@ import 'package:smart_clean/features/admin/admin_schedule/cubit/admin_schedule_c
 import 'package:smart_clean/features/auth/cubit/auth_cubit.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/cubit/booking_cubit.dart';
 import 'package:smart_clean/features/user/home/cubit/home_cubit.dart';
+import 'package:smart_clean/features/user/profile/cubit/profile_cubit.dart';
 import 'package:smart_clean/firebase_options.dart';
 
 void main() async {
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create:  (_) => AdminScheduleCubit()),
-
+        BlocProvider(create: (_) => ProfileCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Cairo', // خط عربي جميل لو عندك الخط ده في المشروع
         ),
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.adminDashboard,
+        initialRoute: Routes.loginRoute,
       ),
     );
   }

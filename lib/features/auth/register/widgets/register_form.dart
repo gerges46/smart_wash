@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
-import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/constants/value_manager.dart';
-
 class RegisterForm extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController emailController;
+  final TextEditingController phoneController; // ← جديد
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
 
@@ -14,6 +13,7 @@ class RegisterForm extends StatelessWidget {
     super.key,
     required this.nameController,
     required this.emailController,
+    required this.phoneController, // ← جديد
     required this.passwordController,
     required this.confirmPasswordController,
   });
@@ -27,6 +27,7 @@ class RegisterForm extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
+      keyboardType: hint.contains("رقم") ? TextInputType.phone : TextInputType.text,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: AppColors.primary),
         hintText: hint,
@@ -45,31 +46,15 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildTextField(
-          AppStrings.fullName,
-          Icons.person_outline,
-          controller: nameController,
-        ),
+        _buildTextField("الاسم الكامل", Icons.person_outline, controller: nameController),
         SizedBox(height: 16.h),
-        _buildTextField(
-          AppStrings.email,
-          Icons.email_outlined,
-          controller: emailController,
-        ),
+        _buildTextField("رقم الموبايل", Icons.phone_outlined, controller: phoneController), // ← جديد
         SizedBox(height: 16.h),
-        _buildTextField(
-          AppStrings.password,
-          Icons.lock_outline,
-          isPassword: true,
-          controller: passwordController,
-        ),
+        _buildTextField("البريد الإلكتروني", Icons.email_outlined, controller: emailController),
         SizedBox(height: 16.h),
-        _buildTextField(
-          AppStrings.confirmPassword,
-          Icons.lock_outline,
-          isPassword: true,
-          controller: confirmPasswordController,
-        ),
+        _buildTextField("كلمة المرور", Icons.lock_outline, isPassword: true, controller: passwordController),
+        SizedBox(height: 16.h),
+        _buildTextField("تأكيد كلمة المرور", Icons.lock_outline, isPassword: true, controller: confirmPasswordController),
       ],
     );
   }

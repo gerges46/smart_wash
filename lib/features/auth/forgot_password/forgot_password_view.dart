@@ -1,172 +1,180 @@
-// // lib/features/auth/forgot_password/view/forgot_password_view.dart
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:smart_clean/core/constants/app_color.dart';
-// import 'package:smart_clean/core/constants/app_strings.dart';
-// import 'package:smart_clean/core/constants/value_manager.dart';
-// import 'package:smart_clean/features/auth/cubit/cubit/forgot_password_cubit.dart';
-// import 'package:smart_clean/features/auth/cubit/cubit/forgot_password_state.dart';
-// import 'package:smart_clean/features/auth/forgot_password/widgets/contact_form.dart';
-// import 'package:smart_clean/features/auth/forgot_password/widgets/forgot_header.dart';
-// import 'package:smart_clean/features/auth/forgot_password/widgets/forgot_timer.dart';
-// import 'package:smart_clean/features/auth/forgot_password/widgets/otp_fields.dart';
-// import 'package:smart_clean/features/auth/forgot_password/widgets/reset_form.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_clean/core/constants/app_color.dart';
+import 'package:smart_clean/features/auth/cubit/auth_cubit.dart';
+import 'package:smart_clean/features/auth/cubit/auth_state.dart';
 
-// class ForgotPasswordView extends StatefulWidget {
-//   const ForgotPasswordView({super.key});
-//   @override
-//   State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
-// }
+class ForgetPasswordView extends StatefulWidget {
+  const ForgetPasswordView({super.key});
 
-// class _ForgotPasswordViewState extends State<ForgotPasswordView> {
-//   int _step = 0; // 0: contact, 1: otp, 2: reset
-//   final TextEditingController _otpController = TextEditingController();
+  @override
+  State<ForgetPasswordView> createState() => _ForgetPasswordViewState();
+}
 
-//   @override
-//   void dispose() {
-//     _otpController.dispose();
-//     super.dispose();
-//   }
+class _ForgetPasswordViewState extends State<ForgetPasswordView> {
+  final TextEditingController _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-//   void _goToStep(int s) => setState(() => _step = s);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.white,
+        iconTheme: const IconThemeData(color: AppColors.primary),
+        title: const Text(
+          "Forgot Password",
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 40.h),
+                Icon(Icons.lock_reset_rounded,
+                    size: 80.sp, color: AppColors.primary),
+                SizedBox(height: 20.h),
+                Text(
+                  "Reset your password",
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.darkText,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  "Enter your email address and we’ll send you a link to reset your password.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.lightText,
+                  ),
+                ),
+                SizedBox(height: 40.h),
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (_) => ForgotPasswordCubit(),
-//       child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
-//         listener: (context, state) {
-//           if (state is ForgotLoading) {
-//             // optional: show loading or let buttons show their own loading
-//           } else if (state is ForgotCodeSent) {
-//             _goToStep(1);
-//             ScaffoldMessenger.of(context).showSnackBar(
-//               const SnackBar(content: Text("تم إرسال رمز التحقق")),
-//             );
-//           } else if (state is ForgotCanResend) {
-//             // handled by builder
-//           } else if (state is ForgotVerified) {
-//             _goToStep(2);
-//             ScaffoldMessenger.of(context).showSnackBar(
-//               const SnackBar(content: Text("تم التحقق، أدخل كلمة مرور جديدة")),
-//             );
-//           } else if (state is ForgotSuccess) {
-//             ScaffoldMessenger.of(
-//               context,
-//             ).showSnackBar(SnackBar(content: Text(state.message)));
-//             // after success, go back to login (or navigate)
-//             Navigator.pop(context);
-//           } else if (state is ForgotError) {
-//             ScaffoldMessenger.of(
-//               context,
-//             ).showSnackBar(SnackBar(content: Text(state.message)));
-//           }
-//         },
-//         builder: (context, state) {
-//           // derive timer values
-//           int seconds = 0;
-//           bool canResend = false;
-//           if (state is ForgotTimerRunning) seconds = state.seconds;
-//           if (state is ForgotCanResend) canResend = true;
+                /// 🔹 Email Field
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.fieldBackground,
+                    hintText: "Enter your email",
+                    hintStyle: TextStyle(color: AppColors.greyText),
+                    prefixIcon: const Icon(Icons.email_outlined,
+                        color: AppColors.primary),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: const BorderSide(
+                          color: AppColors.primary, width: 1.5),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 30.h),
 
-//           return Scaffold(
-//             backgroundColor: AppColors.background,
-//             appBar: AppBar(
-//               backgroundColor: AppColors.white,
-//               elevation: 0,
-//               iconTheme: IconThemeData(color: AppColors.primary),
-//             ),
-//             body: SafeArea(
-//               child: SingleChildScrollView(
-//                 padding: EdgeInsets.symmetric(
-//                   horizontal: AppPadding.p24.w,
-//                   vertical: AppPadding.p20.h,
-//                 ),
-//                 child: Column(
-//                   children: [
-//                     const ForgotHeader(),
-//                     SizedBox(height: AppSize.s24.h),
+                /// 🔹 Reset Button via Cubit
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.h,
+                  child: BlocConsumer<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthPasswordResetEmailSentSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: AppColors.success,
+                            content: Text(
+                              "✅ Password reset link sent to your email.",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      } else if (state is AuthPasswordResetEmailSentFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.error,
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      final isLoading = state is AuthPasswordResetEmailSentLoading;
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  context
+                                      .read<AuthCubit>()
+                                      .resetPassword(_emailController.text.trim());
+                                }
+                              },
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text(
+                                "Send Reset Link",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.h),
 
-//                     // stepper indicator simple
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: List.generate(3, (i) {
-//                         return Container(
-//                           margin: EdgeInsets.symmetric(horizontal: 6.w),
-//                           width: _step == i ? 28.w : 12.w,
-//                           height: 8.h,
-//                           decoration: BoxDecoration(
-//                             color: _step == i
-//                                 ? AppColors.primary
-//                                 : AppColors.lightGrey,
-//                             borderRadius: BorderRadius.circular(10.r),
-//                           ),
-//                         );
-//                       }),
-//                     ),
-
-//                     SizedBox(height: AppSize.s24.h),
-
-//                     // step content
-//                     if (_step == 0) ...[
-//                       ContactForm(
-//                         onSend: (contact) => context
-//                             .read<ForgotPasswordCubit>()
-//                             .sendCode(contact),
-//                       ),
-//                     ] else if (_step == 1) ...[
-//                       ForgotOTPFields(controller: _otpController),
-//                       SizedBox(height: AppSize.s20.h),
-//                       ForgotTimer(
-//                         seconds: seconds,
-//                         canResend: canResend,
-//                         onResend: () =>
-//                             context.read<ForgotPasswordCubit>().resendCode(),
-//                       ),
-//                       SizedBox(height: AppSize.s24.h),
-//                       ElevatedButton(
-//                         onPressed: () => context
-//                             .read<ForgotPasswordCubit>()
-//                             .verifyCode(_otpController.text.trim()),
-//                         style: ElevatedButton.styleFrom(
-//                           backgroundColor: AppColors.primary,
-//                           padding: EdgeInsets.symmetric(
-//                             vertical: 14.h,
-//                             horizontal: 50.w,
-//                           ),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(AppSize.s12),
-//                           ),
-//                         ),
-//                         child: state is ForgotVerifying
-//                             ? const CircularProgressIndicator(
-//                                 color: Colors.white,
-//                               )
-//                             : Text(
-//                                 AppStrings.verifyNow,
-//                                 style: TextStyle(
-//                                   color: AppColors.white,
-//                                   fontSize: AppSize.s16.sp,
-//                                 ),
-//                               ),
-//                       ),
-//                     ] else if (_step == 2) ...[
-//                       ResetForm(
-//                         onReset: (pass, confirm) => context
-//                             .read<ForgotPasswordCubit>()
-//                             .resetPassword(pass, confirm),
-//                       ),
-//                     ],
-
-//                     SizedBox(height: AppSize.s24.h),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
+                /// 🔹 Back to Login
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    "Back to Login",
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

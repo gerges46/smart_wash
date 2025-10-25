@@ -29,8 +29,8 @@ class LoginButton extends StatelessWidget {
             animType: AnimType.scale,
             title: "تم بنجاح 🎉",
             desc: state.isAdmin
-                ? "تم تسجيل دخول الأدمن بنجاح!"
-                : "تم إنشاء الحساب بنجاح!",
+                ? "تم تسجيل دخول كادمن بنجاح!"
+                : "تم تسجيل الدخول بنجاح!",
             btnOkText: "متابعة",
 
             btnOkOnPress: () {

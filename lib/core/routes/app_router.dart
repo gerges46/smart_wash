@@ -3,6 +3,7 @@ import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/features/admin/admin_orders_dashboard/admin_orders_dashboard_view.dart';
 import 'package:smart_clean/features/admin/admin_order_details/admin_order_details_view.dart';
 import 'package:smart_clean/features/admin/admin_schedule/Admin_schedule_view.dart';
+import 'package:smart_clean/features/auth/forgot_password/forgot_password_view.dart';
 import 'package:smart_clean/features/auth/login/login_view.dart';
 import 'package:smart_clean/features/auth/register/register_view.dart';
 import 'package:smart_clean/features/user/booking/booking_details/booking_details_view.dart';
@@ -56,8 +57,8 @@ class RouteGenerator {
       case Routes.registerRoute:
         return MaterialPageRoute(builder: (_) => RegisterView());
 
-      // case Routes.forgotPasswordRoute:
-      //   return MaterialPageRoute(builder: (_) => const ForgotPasswordView());
+      case Routes.forgotPasswordRoute:
+        return MaterialPageRoute(builder: (_) => const ForgetPasswordView());
 
       case Routes.homeRoute:
         return MaterialPageRoute(builder: (_) => const HomeView());

@@ -20,6 +20,13 @@ class AuthFailure extends AuthState {
 
 class AuthLoggedOut extends AuthState {}
 
+class AuthPasswordResetEmailSentSuccess extends AuthState {}
+class AuthPasswordResetEmailSentFailure extends AuthState {
+  final String message;
+  AuthPasswordResetEmailSentFailure({required this.message});
+}
+class AuthPasswordResetEmailSentLoading extends AuthState {}
+
 class PasswordVisibilityChanged extends AuthState {
   final bool isVisible;
   PasswordVisibilityChanged(this.isVisible);

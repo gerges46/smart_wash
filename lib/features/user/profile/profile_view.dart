@@ -1,18 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
+import 'package:smart_clean/core/routes/app_router.dart';
+import 'widgets/profile_card.dart';
+import 'widgets/option_tile.dart';
+import 'cubit/profile_cubit.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = {
-      "name": "أحمد محمد",
-      "phone": "+201000000000",
-      "email": "user@example.com",
-    };
+  State<ProfileView> createState() => _ProfileViewState();
+}
 
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileCubit>().getUserData();
+  }
+
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
+    final cubit = context.read<ProfileCubit>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // ما يقفلهاش بالضغط برة
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: const Text(
+            "تأكيد تسجيل الخروج",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // إلغاء
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[700],
+              ),
+              child: const Text("إلغاء"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context); // اغلق الرسالة
+                await cubit.signOut();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
+              child: const Text("تأكيد",style: TextStyle(color: AppColors.white),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -29,150 +89,86 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
-        child: Column(
-          children: [
-            // ✅ Profile Card
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
+      body: BlocConsumer<ProfileCubit, ProfileState>(
+        listener: (context, state) {
+          if (state is ProfileInitial) {
+            // بعد تسجيل الخروج، يرجع المستخدم لشاشة تسجيل الدخول
+            Navigator.pushReplacementNamed(context, Routes.loginRoute);
+          }
+        },
+        builder: (context, state) {
+          if (state is ProfileLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ProfileLoaded) {
+            final user = {
+              "name": state.name,
+              "phone": state.phone,
+              "email": state.email,
+            };
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 45.r,
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
-                    child: Icon(
-                      Icons.person,
-                      size: 50.sp,
-                      color: AppColors.primary,
+                  ProfileCard(user: user),
+                  SizedBox(height: 25.h),
+                  OptionTile(
+                    icon: Icons.history,
+                    title: "سجل الدفعات",
+                    onTap: () {},
+                  ),
+                  OptionTile(
+                    icon: Icons.settings,
+                    title: "الإعدادات",
+                    onTap: () {},
+                  ),
+                  OptionTile(
+                    icon: Icons.help_outline,
+                    title: "مركز المساعدة",
+                    onTap: () {},
+                  ),
+                  OptionTile(
+                    icon: Icons.policy_outlined,
+                    title: "سياسة الخصوصية",
+                    onTap: () {},
+                  ),
+                  SizedBox(height: 30.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        await _showLogoutConfirmationDialog(context);
+                      },
+                      icon: const Icon(Icons.logout, color: Colors.white),
+                      label: Text(
+                        "تسجيل الخروج",
+                        style:
+                            TextStyle(fontSize: 16.sp, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        elevation: 3,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    user['name']!,
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Text(
-                    user['phone']!,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 14.sp),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    user['email']!,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13.sp),
                   ),
                 ],
               ),
-            ),
-
-            SizedBox(height: 25.h),
-
-            // ✅ Options List
-            _buildOptionTile(
-              icon: Icons.history,
-              title: "سجل الدفعات",
-              onTap: () {},
-            ),
-            _buildOptionTile(
-              icon: Icons.settings,
-              title: "الإعدادات",
-              onTap: () {},
-            ),
-            _buildOptionTile(
-              icon: Icons.help_outline,
-              title: "مركز المساعدة",
-              onTap: () {},
-            ),
-            _buildOptionTile(
-              icon: Icons.policy_outlined,
-              title: "سياسة الخصوصية",
-              onTap: () {},
-            ),
-
-            SizedBox(height: 30.h),
-
-            // ✅ Logout Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.logout, color: Colors.white),
-                label: Text(
-                  "تسجيل الخروج",
-                  style: TextStyle(fontSize: 16.sp, color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  elevation: 3,
-                ),
+            );
+          } else if (state is ProfileError) {
+            return Center(
+              child: Text(
+                "حدث خطأ: ${state.message}",
+                style: const TextStyle(color: Colors.red),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 🔹 عنصر القائمة الجانبية (Setting Tile)
-  Widget _buildOptionTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: 22.r,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: Icon(icon, color: AppColors.primary, size: 22.sp),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16.sp,
-          color: Colors.grey[600],
-        ),
-        onTap: onTap,
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
     );
   }

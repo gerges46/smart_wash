@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_clean/features/auth/forgot_password/forgot_password_view.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_button.dart';
@@ -33,6 +34,29 @@ class LoginView extends StatelessWidget {
                   emailController: emailController,
                   passwordController: passwordController,
                 ),
+
+                // ✅ النص اللي تحت الزرار
+                SizedBox(height: 16.h),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgetPasswordView(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "نسيت كلمة المرور؟",
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 20.h),
                 const LoginFooter(),
               ],
