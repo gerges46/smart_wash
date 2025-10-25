@@ -11,6 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AuthCubit() : super(AuthInitial());
+  
  Future<void> registerUser({
   required String name,
   required String email,
@@ -19,60 +20,70 @@ class AuthCubit extends Cubit<AuthState> {
 }) async {
   emit(AuthLoading());
   try {
-    // 🟡 الخطوة 1: نحاول نجيب المستخدم الحالي لو موجود
-    User? existingUser = _auth.currentUser;
+    const adminEmail = "admin@smartclean.com";
+    const adminPassword = "123456";
 
-    // 🟢 الخطوة 2: لو المستخدم مش موجود → نسجله
-    if (existingUser == null) {
-      UserCredential cred = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    // 🔹 تحقق هل المستخدم هو الأدمن
+    bool isAdmin = (email == adminEmail && password == adminPassword);
 
-      // إرسال رسالة التحقق بالبريد
-      await cred.user!.sendEmailVerification();
+    UserCredential cred = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      // نعمل تسجيل خروج بعد الإرسال
-      await _auth.signOut();
+    User? user = cred.user;
 
-      emit(AuthFailure(
-        message:
-            "تم إرسال رسالة تحقق إلى بريدك الإلكتروني. من فضلك فعّل حسابك ثم سجّل الدخول.",
-      ));
+    // ✅ لو المستخدم أدمن → مايبعتش رسالة تحقق بالبريد
+    if (isAdmin) {
+      await _firestore.collection('users').doc(user!.uid).set({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'role': 'admin',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      emit(AuthSuccess(user: user, isAdmin: true));
       return;
     }
 
-    // 🟢 الخطوة 3: لو المستخدم موجود بالفعل
-    await existingUser.reload(); // نحدث بياناته من السيرفر
-    if (!existingUser.emailVerified) {
-      emit(AuthFailure(
-        message:
-            "يجب تأكيد بريدك الإلكتروني أولاً. تحقق من بريدك واضغط على رابط التفعيل.",
-      ));
-      return;
-    }
+    // 🔸 المستخدم العادي → إرسال رسالة تحقق بالبريد
+    await user!.sendEmailVerification();
 
-    // 🟢 الخطوة 4: لو البريد متحقق منه → نحفظه في Firestore
-    await _firestore.collection('users').doc(existingUser.uid).set({
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    // تسجيل الخروج لغاية ما يفعل الإيميل
+    await _auth.signOut();
 
-    emit(AuthSuccess(user: existingUser, isAdmin: false));
+    emit(AuthFailure(
+      message:
+          "تم إرسال رسالة تحقق إلى بريدك الإلكتروني. من فضلك فعّل حسابك ثم سجّل الدخول.",
+    ));
   } on FirebaseAuthException catch (e) {
-    // لو البريد موجود بالفعل، نعمل فحص للتحقق بدل ما نرمي خطأ
+    // 🔹 حالة البريد موجود مسبقًا
     if (e.code == 'email-already-in-use') {
       try {
-        // نسجل الدخول بالبريد القديم ونفحص التحقق
         UserCredential cred = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
 
-        await cred.user!.reload();
-        if (!cred.user!.emailVerified) {
+        User? user = cred.user;
+        bool isAdmin = (email == "admin@smartclean.com" && password == "123456");
+
+        if (isAdmin) {
+          await _firestore.collection('users').doc(user!.uid).set({
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'role': 'admin',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+          emit(AuthSuccess(user: user, isAdmin: true));
+          return;
+        }
+
+        await user!.reload();
+        if (!user.emailVerified) {
           await _auth.signOut();
           emit(AuthFailure(
             message:
@@ -81,15 +92,16 @@ class AuthCubit extends Cubit<AuthState> {
           return;
         }
 
-        // البريد متحقق منه
-        await _firestore.collection('users').doc(cred.user!.uid).set({
+        // البريد متحقق منه → نحفظ بياناته كمستخدم عادي
+        await _firestore.collection('users').doc(user.uid).set({
           'name': name,
           'email': email,
           'phone': phone,
+          'role': 'user',
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        emit(AuthSuccess(user: cred.user!, isAdmin: false));
+        emit(AuthSuccess(user: user, isAdmin: false));
         return;
       } catch (e2) {
         emit(AuthFailure(message: "فشل تسجيل الدخول بالبريد المسجل مسبقًا."));
@@ -102,6 +114,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthFailure(message: getFriendlyErrorMessage(e.toString())));
   }
 }
+
 
 
 
