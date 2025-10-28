@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
-import 'package:smart_clean/features/user/notifications/notifications_view.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/option_tile.dart';
 import 'cubit/profile_cubit.dart';
@@ -126,7 +125,9 @@ class _ProfileViewState extends State<ProfileView> {
           OptionTile(
             icon: Icons.history,
             title: "سجل الدفعات",
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, Routes.paymentHistoryRoute);
+            },
           ),
           OptionTile(
             icon: Icons.settings,

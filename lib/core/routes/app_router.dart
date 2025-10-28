@@ -6,6 +6,7 @@ import 'package:smart_clean/features/admin/admin_schedule/Admin_schedule_view.da
 import 'package:smart_clean/features/auth/forgot_password/forgot_password_view.dart';
 import 'package:smart_clean/features/auth/login/login_view.dart';
 import 'package:smart_clean/features/auth/register/register_view.dart';
+import 'package:smart_clean/features/user/PaymentHistory/payment_History_View.dart';
 import 'package:smart_clean/features/user/booking/booking_details/booking_details_view.dart';
 import 'package:smart_clean/features/user/booking/my_bookings/my_bookings_view.dart';
 import 'package:smart_clean/features/user/booking/new_booking_view/new_booking_view.dart';
@@ -39,6 +40,8 @@ class Routes {
   static const String bottomNavRoute = "/bottomNavShell";
   static const String settingsRoute = "/settings";
   static  const String notificationRoute = "/notification";
+  static const String paymentHistoryRoute = '/paymentHistory';
+
 
   // 👷 Worker/Admin Routes
   static const String adminDashboard = "/admin-dashboard";
@@ -106,7 +109,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SettingsView());  
 
       case Routes.notificationRoute:
-        return MaterialPageRoute(builder: (_) => const NotificationsView());   
+        return MaterialPageRoute(builder: (_) => const NotificationsView());
+       case Routes.paymentHistoryRoute:
+        return MaterialPageRoute(builder: (_) => const PaymentHistoryView());     
 
       // 👷 Worker/Admin Routes
       case Routes.adminDashboard:
