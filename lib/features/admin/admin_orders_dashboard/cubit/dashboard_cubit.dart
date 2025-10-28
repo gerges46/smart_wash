@@ -134,4 +134,34 @@ Future<void> updateBooking({
       return "حدث خطأ غير متوقع، حاول مرة أخرى لاحقًا 😕";
     }
   }
+
+  List<Map<String, dynamic>> filterBookings({
+  String? clientName,
+  String? status,
+  String? paymentStatus,
+}) {
+  var filtered = List<Map<String, dynamic>>.from(state.adminBookings);
+
+  if (clientName != null && clientName.isNotEmpty) {
+    filtered = filtered
+        .where((b) =>
+            b["client"].toString().toLowerCase().contains(clientName.toLowerCase()))
+        .toList();
+  }
+
+  if (status != null && status.isNotEmpty) {
+    filtered = filtered
+        .where((b) => b["status"].toString().toLowerCase() ==
+            status.toLowerCase())
+        .toList();
+  }
+
+  if (paymentStatus != null && paymentStatus.isNotEmpty) {
+    final isPaid = paymentStatus == "مدفوع";
+    filtered = filtered.where((b) => b["isPaid"] == isPaid).toList();
+  }
+
+  return filtered;
+}
+
 }

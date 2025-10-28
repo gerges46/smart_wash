@@ -13,6 +13,7 @@ import 'package:smart_clean/features/user/booking/payment/payment_view.dart';
 import 'package:smart_clean/features/user/booking/prebooking/prebooking_view.dart';
 import 'package:smart_clean/features/user/booking/rating_view/rating_view.dart';
 import 'package:smart_clean/features/user/home/home_view.dart';
+import 'package:smart_clean/features/user/notifications/notifications_view.dart';
 import 'package:smart_clean/features/user/onboarding/views/onboarding_view.dart';
 import 'package:smart_clean/features/splash_view.dart';
 import 'package:smart_clean/features/user/profile/profile_view.dart';
@@ -37,6 +38,7 @@ class Routes {
   static const String profileRoute = "/profile";
   static const String bottomNavRoute = "/bottomNavShell";
   static const String settingsRoute = "/settings";
+  static  const String notificationRoute = "/notification";
 
   // 👷 Worker/Admin Routes
   static const String adminDashboard = "/admin-dashboard";
@@ -101,7 +103,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ProfileView());
 
       case Routes.settingsRoute:
-  return MaterialPageRoute(builder: (_) => const SettingsView());  
+        return MaterialPageRoute(builder: (_) => const SettingsView());  
+
+      case Routes.notificationRoute:
+        return MaterialPageRoute(builder: (_) => const NotificationsView());   
 
       // 👷 Worker/Admin Routes
       case Routes.adminDashboard:

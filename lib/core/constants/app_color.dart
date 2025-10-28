@@ -33,4 +33,5 @@ class AppColors {
   static const Color black87 = Colors.black87;
   static const Color darkText = Color(0xFF222222); // لون النص الغامق
   static const Color lightText = Color(0xFF777777); // لون النص الفاتح
+  static const Color bgColor = Color(0xFFF5F5F5);
 }

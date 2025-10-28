@@ -97,4 +97,28 @@ Future<void> updateUserData({
       emit(ProfileError("Logout failed: $e"));
     }
   }
+
+  Future<void> getUserNotifications() async {
+  try {
+    emit(ProfileLoading());
+
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) {
+      emit(const ProfileError("User not logged in"));
+      return;
+    }
+
+    final snapshot = await _firestore
+        .collection('notifications')
+        .where('userId', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    final notifications = snapshot.docs.map((doc) => doc.data()).toList();
+    emit(ProfileNotificationsLoaded(notifications: notifications));
+  } catch (e) {
+    emit(ProfileError("فشل تحميل الإشعارات"));
+  }
+}
+
 }

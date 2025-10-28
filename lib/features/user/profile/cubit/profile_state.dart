@@ -41,3 +41,12 @@ class ProfileSuccess extends ProfileState {
   @override
   List<Object?> get props => [message];
 }
+
+class ProfileNotificationsLoaded extends ProfileState {
+  final List<Map<String, dynamic>> notifications;
+
+  const ProfileNotificationsLoaded({required this.notifications});
+
+  @override
+  List<Object?> get props => [notifications];
+}

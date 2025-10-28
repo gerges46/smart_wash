@@ -41,6 +41,7 @@ class NewBookingView extends StatelessWidget {
                     onConfirm: () async {
                       if (cubit.validateData(context)) {
                         await cubit.addBookingToFirestore(context);
+                        
                       }
                     },
                   ),

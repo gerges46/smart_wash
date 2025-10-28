@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_clean/core/constants/app_color.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
+import 'package:smart_clean/features/user/notifications/notifications_view.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/option_tile.dart';
 import 'cubit/profile_cubit.dart';
@@ -135,6 +136,19 @@ class _ProfileViewState extends State<ProfileView> {
             },
           ),
           SizedBox(height: 30.h),
+        //   OptionTile(
+        //   icon: Icons.notifications,
+        //   title: "الإشعارات",
+        //   onTap: () async {
+        //     final cubit = context.read<ProfileCubit>();
+        //     await cubit.getUserNotifications();
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (_) => const NotificationsView()),
+        //     );
+        //   },
+        // ),
+
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
