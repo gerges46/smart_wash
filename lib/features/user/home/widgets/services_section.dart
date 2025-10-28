@@ -37,7 +37,7 @@ class ServicesSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        TextButton(onPressed: () {}, child: const Text(AppStrings.viewAll)),
+       
       ],
     ),
     SizedBox(height: AppSize.s8.h),

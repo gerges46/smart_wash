@@ -8,9 +8,9 @@ import 'package:smart_clean/core/routes/app_router.dart';
 part 'rating_state.dart';
 
 class RatingCubit extends Cubit<RatingState> {
-  RatingCubit({required this.bookingId}) : super(RatingInitial());
+  final String bookingId; // ✅ خليه final عادي مش late
+  RatingCubit(this.bookingId) : super(RatingInitial());
   
-  final String bookingId;
   double rating = 4.0;
   final TextEditingController noteController = TextEditingController();
   

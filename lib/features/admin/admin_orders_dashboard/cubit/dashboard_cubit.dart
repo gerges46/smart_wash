@@ -63,28 +63,30 @@ class DashboardCubit extends Cubit<DashboardState> {
     final snapshot = await _firestore.collectionGroup('bookings').orderBy('createdAt', descending: true).get();
 
     final bookings = await Future.wait(snapshot.docs.map((doc) async {
-      final data = doc.data();
+  final data = doc.data();
 
-      // جلب معلومات المستخدم الأب
-      final userDoc = await doc.reference.parent.parent?.get();
-      final userData = userDoc?.data();
+  // جلب معلومات المستخدم الأب
+  final userDoc = await doc.reference.parent.parent?.get();
+  final userData = userDoc?.data();
 
-      return {
-        "id": doc.id,
-        "userId": doc.reference.parent.parent?.id ?? "",
-        "client": userData?['name'] ?? "غير معروف",
-        "email": userData?['email'] ?? "",
-        "service": data['service'] ?? "غير محدد",
-        "price": "${data['price'] ?? 0} ج.م",
-        "date": data['date'] ?? "",
-        "time": data['time'] ?? "",
-        "status": data['status'] ?? "غير معروف",
-        "address": data['address'] ?? "",
-        "isPaid": data['isPaid'] ?? false,
-        "isCancelled": data['isCancelled'] ?? false,
-        "createdAt": data['createdAt'] ?? null,
-      };
-    }).toList());
+  return {
+    "id": doc.id,
+    "userId": doc.reference.parent.parent?.id ?? "",
+    "client": userData?['name'] ?? "غير معروف",
+    "phone": userData?['phone'] ?? "غير متوفر", // ✅ أضفنا رقم الموبايل هنا
+    "email": userData?['email'] ?? "",
+    "service": data['service'] ?? "غير محدد",
+    "price": "${data['price'] ?? 0} ج.م",
+    "date": data['date'] ?? "",
+    "time": data['time'] ?? "",
+    "status": data['status'] ?? "غير معروف",
+    "address": data['address'] ?? "",
+    "isPaid": data['isPaid'] ?? false,
+    "isCancelled": data['isCancelled'] ?? false,
+    "createdAt": data['createdAt'] ?? null,
+  };
+}).toList());
+
 
     emit(state.copyWith(adminBookings: bookings, loading: false));
     debugPrint("✅ تم تحميل جميع الحجوزات: ${bookings.length}");

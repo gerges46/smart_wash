@@ -12,7 +12,7 @@ class RatingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RatingCubit(bookingId: bookingId),
+      create: (_) => RatingCubit(bookingId),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: Container(

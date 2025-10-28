@@ -53,14 +53,19 @@ class AdminScheduleCubit extends Cubit<AdminScheduleState> {
             grouped[dayName] = [];
           }
 
-          grouped[dayName]!.add({
-            'service': service,
-            'status': status,
-            'time': time,
-            'price': price,
-            'userName': userName,
-            'address': address,
-          });
+                  grouped[dayName]!.add({
+          'service': service,
+          'status': status,
+          'time': time,
+          'price': price,
+          'userName': userName,
+          'address': address,
+          'phone': userData['phone'] ?? 'غير متوفر', // ✅ إضافة رقم الموبايل
+          'date': date != null
+              ? "${date.day}/${date.month}/${date.year}"
+              : 'غير محدد', // ✅ إضافة التاريخ
+        });
+
         }
       }
 

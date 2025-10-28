@@ -66,7 +66,7 @@ class OrderItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status = order["status"] ?? "Unknown";
+    final status = order["status"] ?? "غير معروف";
     final color = _getStatusColor(status);
 
     return Container(
@@ -87,12 +87,12 @@ class OrderItemTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 اسم المستخدم
+          // 🔹 اسم المستخدم + الحالة
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                order["userName"] ?? "Unknown User",
+                order["userName"] ?? "مستخدم غير معروف",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16.sp,
@@ -100,8 +100,7 @@ class OrderItemTile extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -111,7 +110,13 @@ class OrderItemTile extends StatelessWidget {
                     Icon(_getStatusIcon(status), color: color, size: 16),
                     SizedBox(width: 5.w),
                     Text(
-                      status,
+                      status == "Completed"
+                          ? "مكتمل"
+                          : status == "Pending"
+                              ? "قيد التنفيذ"
+                              : status == "Canceled"
+                                  ? "ملغي"
+                                  : status,
                       style: TextStyle(
                         color: color,
                         fontWeight: FontWeight.w600,
@@ -127,15 +132,19 @@ class OrderItemTile extends StatelessWidget {
           SizedBox(height: 8.h),
           Divider(color: Colors.grey.shade300, height: 12.h),
 
-          // 🔹 تفاصيل الحجز
-          _buildInfoRow(Icons.cleaning_services_rounded, "Service",
-              order["service"] ?? "N/A"),
-          _buildInfoRow(Icons.attach_money_rounded, "Price",
-              "${order["price"] ?? '0'} EGP"),
-          _buildInfoRow(Icons.schedule_rounded, "Time",
-              order["time"] ?? "Not specified"),
-          _buildInfoRow(Icons.location_on_rounded, "Address",
-              order["address"] ?? "No address"),
+          // 🔹 تفاصيل الحجز بالعربي
+          _buildInfoRow(Icons.cleaning_services_rounded, "الخدمة",
+              order["service"] ?? "غير محددة"),
+          _buildInfoRow(Icons.attach_money_rounded, "السعر",
+              "${order["price"] ?? '0'} جنيه"),
+          _buildInfoRow(Icons.schedule_rounded, "الوقت",
+              order["time"] ?? "غير محدد"),
+          _buildInfoRow(Icons.calendar_today_rounded, "التاريخ",
+              order["date"] ?? "غير محدد"),
+          _buildInfoRow(Icons.phone_rounded, "رقم الموبايل",
+              order["phone"] ?? "غير متوفر"),
+          _buildInfoRow(Icons.location_on_rounded, "العنوان",
+              order["address"] ?? "غير موجود"),
 
           SizedBox(height: 4.h),
         ],

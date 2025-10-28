@@ -88,6 +88,16 @@ class _ProfileViewState extends State<ProfileView> {
             fontSize: 18.sp,
           ),
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
+          onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+      context, 
+      Routes.bottomNavRoute, 
+      (route) => false
+    );
+          },
+        ),
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {

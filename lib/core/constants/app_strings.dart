@@ -140,9 +140,10 @@ class AppStrings {
 
   // 🧰 Worker/Admin Section
   static const String workerLoginTitle = "Worker Login";
-  static const String ordersDashboard = "Orders Dashboard";
-  static const String orderDetails = "Order Details";
-  static const String workerSchedule = "Work Schedule";
+  static const String ordersDashboard = "لوحة الطلبات";
+static const String orderDetails = "تفاصيل الطلب";
+static const String workerSchedule = "جدول العمل";
+
 
   static const String startWashing = "Start Washing";
   static const String completeOrder = "Complete Order";

@@ -98,6 +98,13 @@ class _AdminOrderDetailsViewState extends State<AdminOrderDetailsView> {
               title: "العميل",
               value: widget.order['client'] ?? 'غير معروف',
             ),
+            // ✅ رقم الموبايل (غير قابل للتعديل)
+            OrderInfoCard(
+              icon: Icons.phone,
+              title: "رقم الموبايل",
+              value: widget.order['phone'] ?? 'غير متوفر',
+            ),
+
             OrderInfoCard(
               icon: Icons.cleaning_services,
               title: "الخدمة",

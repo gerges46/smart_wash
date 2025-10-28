@@ -273,7 +273,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               },
               icon: const Icon(Icons.schedule, color: Colors.white),
               label: const Text(
-                "View Schedule",
+                "جدول العمل",
                 style: TextStyle(color: Colors.white),
               ),
             ),
