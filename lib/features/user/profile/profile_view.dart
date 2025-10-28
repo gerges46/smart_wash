@@ -107,78 +107,67 @@ class _ProfileViewState extends State<ProfileView> {
           }
         },
         builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProfileLoaded) {
-            final user = {
-              "name": state.name,
-              "phone": state.phone,
-              "email": state.email,
-            };
+  if (state is ProfileLoading) {
+    return const Center(child: CircularProgressIndicator());
+  } else if (state is ProfileLoaded) {
+    final user = {
+      "name": state.name,
+      "phone": state.phone,
+      "email": state.email,
+    };
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
-              child: Column(
-                children: [
-                  ProfileCard(user: user),
-                  SizedBox(height: 25.h),
-                  OptionTile(
-                    icon: Icons.history,
-                    title: "سجل الدفعات",
-                    onTap: () {},
-                  ),
-                  OptionTile(
-                    icon: Icons.settings,
-                    title: "الإعدادات",
-                    onTap: () {},
-                  ),
-                  OptionTile(
-                    icon: Icons.help_outline,
-                    title: "مركز المساعدة",
-                    onTap: () {},
-                  ),
-                  OptionTile(
-                    icon: Icons.policy_outlined,
-                    title: "سياسة الخصوصية",
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 30.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await _showLogoutConfirmationDialog(context);
-                      },
-                      icon: const Icon(Icons.logout, color: Colors.white),
-                      label: Text(
-                        "تسجيل الخروج",
-                        style:
-                            TextStyle(fontSize: 16.sp, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        elevation: 3,
-                      ),
-                    ),
-                  ),
-                ],
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
+      child: Column(
+        children: [
+          ProfileCard(user: user),
+          SizedBox(height: 25.h),
+          OptionTile(
+            icon: Icons.history,
+            title: "سجل الدفعات",
+            onTap: () {},
+          ),
+          OptionTile(
+            icon: Icons.settings,
+            title: "الإعدادات",
+            onTap: () {
+              Navigator.pushNamed(context, Routes.settingsRoute);
+            },
+          ),
+          SizedBox(height: 30.h),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                await _showLogoutConfirmationDialog(context);
+              },
+              icon: const Icon(Icons.logout, color: Colors.white),
+              label: Text(
+                "تسجيل الخروج",
+                style: TextStyle(fontSize: 16.sp, color: Colors.white),
               ),
-            );
-          } else if (state is ProfileError) {
-            return Center(
-              child: Text(
-                "حدث خطأ: ${state.message}",
-                style: const TextStyle(color: Colors.red),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                elevation: 3,
               ),
-            );
-          } else {
-            return const SizedBox();
-          }
-        },
+            ),
+          ),
+        ],
+      ),
+    );
+  } else if (state is ProfileError) {
+    // ✅ الحل هنا
+    context.read<ProfileCubit>().getUserData();
+    return const Center(child: CircularProgressIndicator());
+  } else {
+    return const SizedBox();
+  }
+
+}
       ),
     );
   }

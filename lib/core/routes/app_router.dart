@@ -16,6 +16,7 @@ import 'package:smart_clean/features/user/home/home_view.dart';
 import 'package:smart_clean/features/user/onboarding/views/onboarding_view.dart';
 import 'package:smart_clean/features/splash_view.dart';
 import 'package:smart_clean/features/user/profile/profile_view.dart';
+import 'package:smart_clean/features/user/settings/settings_view.dart';
 import 'package:smart_clean/features/user/widgets/bottom_nav_shell.dart';
 
 class Routes {
@@ -35,6 +36,7 @@ class Routes {
   static const String ratingRoute = "/rating";
   static const String profileRoute = "/profile";
   static const String bottomNavRoute = "/bottomNavShell";
+  static const String settingsRoute = "/settings";
 
   // 👷 Worker/Admin Routes
   static const String adminDashboard = "/admin-dashboard";
@@ -97,6 +99,9 @@ class RouteGenerator {
 
       case Routes.profileRoute:
         return MaterialPageRoute(builder: (_) => const ProfileView());
+
+      case Routes.settingsRoute:
+  return MaterialPageRoute(builder: (_) => const SettingsView());  
 
       // 👷 Worker/Admin Routes
       case Routes.adminDashboard:

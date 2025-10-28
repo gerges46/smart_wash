@@ -33,3 +33,11 @@ class ProfileError extends ProfileState {
   @override
   List<Object?> get props => [message];
 }
+
+class ProfileSuccess extends ProfileState {
+  final String message;
+  const ProfileSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

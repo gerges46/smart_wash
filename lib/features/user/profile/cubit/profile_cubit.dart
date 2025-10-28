@@ -37,6 +37,57 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+
+Future<void> updateUserData({
+  required String phone,
+  required String currentPassword,
+  String? newPassword,
+}) async {
+  try {
+    emit(ProfileLoading());
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("User not found");
+
+    // 🔄 تأكيد المصادقة بالباسورد الحالي
+    await _auth.signInWithEmailAndPassword(
+      email: user.email!,
+      password: currentPassword,
+    );
+
+    final cred = EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(cred);
+
+    // ✅ تحديث كلمة المرور لو المستخدم كتب جديد
+    if (newPassword != null && newPassword.isNotEmpty) {
+      await user.updatePassword(newPassword);
+    }
+
+    // ✅ تحديث رقم الموبايل فقط في Firestore
+    await _firestore.collection('users').doc(user.uid).update({
+      'phone': phone,
+    });
+
+    emit(ProfileSuccess("✅ تم حفظ التغييرات بنجاح"));
+    await getUserData();
+  } on FirebaseAuthException catch (e) {
+    String message = "حدث خطأ غير متوقع، حاول مرة أخرى.";
+
+    if (e.code == 'wrong-password') {
+      message = "❌ كلمة المرور الحالية غير صحيحة.";
+    } else if (e.code == 'requires-recent-login') {
+      message =
+          "⚠️ لحماية حسابك، يرجى تسجيل الدخول مرة أخرى قبل تعديل كلمة المرور.";
+    }
+    
+    emit(ProfileError(message));
+  } catch (e) {
+    emit(ProfileError("حدث خطأ أثناء حفظ التغييرات، حاول لاحقًا."));
+  }
+}
+
   /// ✅ تسجيل الخروج من الحساب
   Future<void> signOut() async {
     try {
