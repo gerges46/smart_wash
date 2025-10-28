@@ -50,3 +50,4 @@ class ProfileNotificationsLoaded extends ProfileState {
   @override
   List<Object?> get props => [notifications];
 }
+

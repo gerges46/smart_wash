@@ -9,7 +9,7 @@ class BookingCard extends StatelessWidget {
   final Map<String, dynamic> lastBooking;
   const BookingCard({super.key, required this.lastBooking});
 
-  /// 🕒 تنسيق التاريخ والوقت بشكل واضح
+  /// 🕒 تنسيق التاريخ والوقت
   String _formatDate(dynamic dateValue) {
     try {
       if (dateValue == null) return "غير محدد";
@@ -30,6 +30,8 @@ class BookingCard extends StatelessWidget {
     final String status = lastBooking['status'] ?? "غير معروف";
     final String date = _formatDate(lastBooking['date']);
     final String time = lastBooking['time']?.toString() ?? "غير محدد";
+    final String address = lastBooking['address'] ?? "غير محدد";
+    final dynamic price = lastBooking['price'] ?? "غير محدد";
 
     return Container(
       width: double.infinity,
@@ -48,7 +50,7 @@ class BookingCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔹 العنوان
+          /// 🔹 عنوان الخدمة + الحالة
           Row(
             children: [
               Container(
@@ -85,6 +87,7 @@ class BookingCard extends StatelessWidget {
             title: "التاريخ",
             value: date,
           ),
+
           SizedBox(height: 12.h),
 
           /// ⏰ الوقت
@@ -92,6 +95,24 @@ class BookingCard extends StatelessWidget {
             icon: Icons.access_time,
             title: "الوقت",
             value: time,
+          ),
+
+          SizedBox(height: 12.h),
+
+          /// 📍 العنوان
+          InfoRow(
+            icon: Icons.location_on,
+            title: "العنوان",
+            value: address,
+          ),
+
+          SizedBox(height: 12.h),
+
+          /// 💰 السعر
+          InfoRow(
+            icon: Icons.attach_money,
+            title: "السعر",
+            value: "$price جنيه",
           ),
         ],
       ),
