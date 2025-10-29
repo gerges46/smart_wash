@@ -6,12 +6,14 @@ class InfoRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? value; // ✅ يقبل null بأمان
+  final Color? valueColor; // ✅ لون مخصص لقيمة النص (اختياري)
 
   const InfoRow({
     super.key,
     required this.icon,
     required this.title,
     this.value,
+    this.valueColor, // ✅ تمت الإضافة
   });
 
   @override
@@ -32,7 +34,7 @@ class InfoRow extends StatelessWidget {
         Text(
           value ?? "غير محدد", // ✅ يمنع الخطأ لو null
           style: TextStyle(
-            color: Colors.black,
+            color: valueColor ?? Colors.black, // ✅ لو فيه لون نستخدمه
             fontWeight: FontWeight.bold,
             fontSize: 16.sp,
           ),

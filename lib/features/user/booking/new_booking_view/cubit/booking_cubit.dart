@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:smart_clean/core/constants/app_strings.dart';
 import 'package:smart_clean/core/routes/app_router.dart';
 import 'package:smart_clean/core/utils/error_handler.dart';
-import 'package:smart_clean/features/user/booking/payment/payment_view.dart';
+import 'package:smart_clean/features/user/booking/booking_details/booking_details_view.dart';
 import 'package:smart_clean/main.dart'; // ✅ ضروري للوصول لـ flutterLocalNotificationsPlugin
 import 'package:timezone/timezone.dart' as tz;
 
@@ -132,7 +132,7 @@ class BookingCubit extends Cubit<BookingState> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("✅ تم إرسال الحجز بنجاح، وسيصلك إشعار قبل موعد الحجز بـ 30 دقيقة."),
+          content: Text("✅ تم إرسال الحجز بنجاح ."),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 3),
         ),
@@ -141,7 +141,7 @@ class BookingCubit extends Cubit<BookingState> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => PaymentView(bookingId: bookingRef.id),
+          builder: (_) => BookingDetailsView(),
         ),
       );
     } catch (e) {
@@ -156,35 +156,60 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   Future<void> getLastBooking() async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final user = _auth.currentUser;
-      if (user == null) {
-        emit(state.copyWith(isLoading: false));
-        return;
-      }
-
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('bookings')
-          .orderBy('createdAt', descending: true)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        emit(state.copyWith(
-          lastBooking: snapshot.docs.first.data(),
-          isLoading: false,
-        ));
-      } else {
-        emit(state.copyWith(lastBooking: null, isLoading: false));
-      }
-    } catch (e) {
-      debugPrint("❌ Error loading last booking: $e");
+  emit(state.copyWith(isLoading: true));
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
       emit(state.copyWith(isLoading: false));
+      return;
     }
+
+    // 🔹 نجيب آخر حجز
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .orderBy('createdAt', descending: true)
+        .limit(1)
+        .get();
+
+   if (snapshot.docs.isNotEmpty) {
+  final bookingDoc = snapshot.docs.first;
+  final bookingData = bookingDoc.data();
+
+  // ✅ أضف السطر ده لتخزين الـ id في الخريطة
+  bookingData['id'] = bookingDoc.id;
+
+  // 🔹 نجيب التقييم من الكولكشن الفرعية
+  final ratingSnapshot =
+      await bookingDoc.reference.collection('ratings').limit(1).get();
+
+  double ratingValue = 0;
+  String noteMessage = "";
+
+  if (ratingSnapshot.docs.isNotEmpty) {
+    final ratingData = ratingSnapshot.docs.first.data();
+    ratingValue = (ratingData['rating'] ?? 0).toDouble();
+    noteMessage = ratingData['note'] ?? "";
   }
+
+  bookingData['rating'] = ratingValue;
+  bookingData['note'] = noteMessage;
+
+  emit(state.copyWith(
+    lastBooking: bookingData,
+    isLoading: false,
+  ));
+}
+ else {
+      emit(state.copyWith(lastBooking: null, isLoading: false));
+    }
+  } catch (e) {
+    debugPrint("❌ Error loading last booking: $e");
+    emit(state.copyWith(isLoading: false));
+  }
+}
+
 
   Future<void> pay(BuildContext context) async {
     try {
@@ -345,64 +370,83 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  Future<void> getUserBookings() async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final user = _auth.currentUser;
-      if (user == null) {
-        emit(state.copyWith(isLoading: false, userBookings: []));
-        return;
+Future<void> getUserBookings() async {
+  emit(state.copyWith(isLoading: true));
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      emit(state.copyWith(isLoading: false, userBookings: []));
+      return;
+    }
+
+    final bookingsSnapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('bookings')
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    List<Map<String, dynamic>> bookings = [];
+
+    for (var doc in bookingsSnapshot.docs) {
+      final data = doc.data();
+
+      // 🔹 قراءة تقييم الحجز (من الكولكشن الفرعية ratings)
+      final ratingSnapshot = await doc.reference.collection('ratings').limit(1).get();
+      double ratingValue = 0;
+      String noteMessage = "";
+
+      if (ratingSnapshot.docs.isNotEmpty) {
+        final ratingData = ratingSnapshot.docs.first.data();
+        ratingValue = (ratingData['rating'] ?? 0).toDouble();
+        noteMessage = ratingData['note'] ?? "";
       }
 
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('bookings')
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      final bookings = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return {
-          "id": doc.id,
-          "service": data['service'] ?? "غير محدد",
-          "price": "${data['price']} ج.م",
-          "date": data['date'] ?? "",
-          "time": data['time'] ?? "",
-          "status": data['status'] ?? "غير معروف",
-          "address": data['address'] ?? "",
-        };
-      }).toList();
-
-      emit(state.copyWith(
-        userBookings: bookings,
-        isLoading: false,
-      ));
-      debugPrint("✅ تم تحميل الحجوزات بنجاح: ${bookings.length} حجوزات.");
-    } catch (e) {
-      debugPrint("❌ خطأ أثناء تحميل الحجوزات: $e");
-      emit(state.copyWith(isLoading: false, userBookings: []));
+      bookings.add({
+        "id": doc.id,
+        "service": data['service'] ?? "غير محدد",
+        "price": "${data['price']} ج.م",
+        "date": data['date'] ?? "",
+        "time": data['time'] ?? "",
+        "status": data['status'] ?? "غير معروف",
+        "address": data['address'] ?? "",
+        "isPaid": data['isPaid'] ?? false,
+        "rating": ratingValue,
+        "note": noteMessage,
+      });
     }
-  }
 
- Future<void> scheduleBookingNotification(
+    emit(state.copyWith(userBookings: bookings, isLoading: false));
+    debugPrint("✅ تم تحميل الحجوزات بنجاح: ${bookings.length} حجوزات.");
+  } catch (e) {
+    debugPrint("❌ خطأ أثناء تحميل الحجوزات: $e");
+    emit(state.copyWith(isLoading: false, userBookings: []));
+  }
+}
+
+Future<void> scheduleBookingNotification(
   DateTime bookingTime,
   FlutterLocalNotificationsPlugin notificationsPlugin,
 ) async {
-  final notificationTime = bookingTime.subtract(const Duration(minutes: 10));
+  var notificationTime = bookingTime.subtract(const Duration(minutes: 10));
+
+  // ✅ لو الوقت المحسوب فات بالفعل، خلّي الإشعار بعد دقيقة من الآن بدل كده
+  if (notificationTime.isBefore(DateTime.now())) {
+    notificationTime = DateTime.now().add(const Duration(minutes: 1));
+  }
 
   print("⏰ هيظهر إشعار الساعة: $notificationTime");
 
   await notificationsPlugin.zonedSchedule(
-    DateTime.now().millisecondsSinceEpoch ~/ 1000, // ID فريد
+    DateTime.now().millisecondsSinceEpoch ~/ 1000,
     'تذكير بالحجز',
-    'دي تجربة إشعار مجدول بعد 5 ثواني 🔔',
+    '🧽 حجزك هيبدأ بعد قليل!',
     tz.TZDateTime.from(notificationTime, tz.local),
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'booking_channel',
         'Booking Notifications',
-        channelDescription: 'تذكير بالحجز قبل 30 دقيقة',
+        channelDescription: 'تذكير بالحجز قبل 10 دقائق',
         importance: Importance.max,
         priority: Priority.high,
       ),
@@ -410,8 +454,9 @@ class BookingCubit extends Cubit<BookingState> {
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
   );
 
-  print("✅ تم جدولة إشعار الاختبار");
+  print("✅ تم جدولة إشعار الحجز بنجاح");
 }
+
 
 
 Future<void> testImmediateNotification() async {
