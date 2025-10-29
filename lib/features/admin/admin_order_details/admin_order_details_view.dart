@@ -42,44 +42,48 @@ class _AdminOrderDetailsViewState extends State<AdminOrderDetailsView> {
   }
 
   Future<void> _openEditDialog() async {
-    showEditOrderDialog(
-      context: context,
-      currentService: service,
-      currentTime: time,
-      currentLocation: location,
-      currentStatus: status,
-      servicesList: AppStrings.services,
-      statusList: statusList,
-      onSave: (newService, newTime, newLocation, newStatus) async {
-        setState(() {
-          service = newService;
-          time = newTime;
-          location = newLocation;
-          status = newStatus;
-        });
+  showEditOrderDialog(
+    context: context,
+    currentService: service,
+    currentTime: time,
+    currentLocation: location,
+    currentStatus: status,
+    currentPrice: double.tryParse(widget.order['price'].toString().replaceAll('ج.م', '').trim()) ?? 0,
+    servicesList: AppStrings.services,
+    statusList: statusList,
+    onSave: (newService, newTime, newLocation, newStatus, newPrice) async {
+      setState(() {
+        service = newService;
+        time = newTime;
+        location = newLocation;
+        status = newStatus;
+        widget.order['price'] = newPrice;
+      });
 
-        final cubit = BlocProvider.of<DashboardCubit>(context);
+      final cubit = BlocProvider.of<DashboardCubit>(context);
 
-        await cubit.updateBooking(
-          userId: widget.order['userId'],
-          bookingId: widget.order['id'],
-          updatedData: {
-            'service': newService,
-            'time': newTime,
-            'address': newLocation,
-            'status': newStatus,
-          },
-        );
+      await cubit.updateBooking(
+        userId: widget.order['userId'],
+        bookingId: widget.order['id'],
+        updatedData: {
+          'service': newService,
+          'time': newTime,
+          'address': newLocation,
+          'status': newStatus,
+          'price': newPrice,
+        },
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("✅ تم تحديث بيانات الطلب بنجاح"),
-            backgroundColor: Colors.green,
-          ),
-        );
-      },
-    );
-  }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("✅ تم تحديث بيانات الطلب بنجاح"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +113,11 @@ class _AdminOrderDetailsViewState extends State<AdminOrderDetailsView> {
               icon: Icons.cleaning_services,
               title: "الخدمة",
               value: service,
+            ),
+            OrderInfoCard(
+              icon: Icons.price_change,
+              title: "السعر",
+              value: "${widget.order['price'] ?? '0'} ج.م",
             ),
             OrderInfoCard(
               icon: Icons.access_time,
