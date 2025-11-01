@@ -1,155 +1,53 @@
 class AppStrings {
-  // 🔹 General
-  static const String appName = "Smart Clean";
-  static const String slogan = "We come to you!";
   static const String noRouteFound = "No Route Found";
-
-  // 🔹 Onboarding
-  static const String onboardingTitle1 = "غسيل سيارتك أينما كنت 🚗";
-  static const String onboardingSub1 = "نصلك أينما كنت لغسيل سيارتك بكل سهولة.";
-
-  static const String onboardingTitle2 = "احجز بسهولة ⏰";
-  static const String onboardingSub2 =
-      "حدد الموعد والمكان المناسبين لك بخطوات بسيطة.";
-
-  static const String onboardingTitle3 = "خدمة موثوقة وسريعة ⚡";
-  static const String onboardingSub3 =
-      "فريقنا المحترف يضمن لك نظافة مثالية في وقت قياسي.";
-
-  static const String next = "التالي";
-  static const String startNow = "ابدأ الآن";
-
-  // 🔹 Login Screen
-  static const String loginTitle = "تسجيل الدخول إلى حسابك";
-  static const String loginEmail = "البريد الإلكتروني ";
-  static const String loginPassword = "كلمة المرور";
-  static const String forgotPassword = "نسيت كلمة المرور؟";
-  static const String loginButton = "تسجيل الدخول";
-  static const String noAccount = "ليس لديك حساب؟ ";
-  static const String createAccount = "أنشئ حساب جديد";
-
-  // Register
+  // Titles
   static const String registerTitle = "إنشاء حساب جديد";
-  static const String fullName = "الاسم الكامل";
-  static const String email = "البريد الإلكتروني";
+  static const String registerSubtitle = "سجل بياناتك للبدء";
+  static const String fullName = "*الاسم الكامل";
+  static const String email = "*البريد الإلكتروني";
   static const String phone = "رقم الجوال";
-  static const String password = "كلمة المرور";
-  static const String confirmPassword = "تأكيد كلمة المرور";
-  static const String registerButton = "تسجيل";
+  static const String password = "*كلمة المرور";
+  static const String confirmPassword = "*تأكيد كلمة المرور ";
+  static const String registerButton = "إنشاء حساب";
   static const String haveAccount = "لديك حساب بالفعل؟ ";
-  static const String loginNow = "سجّل دخولك الآن";
+  static const String loginNow = "سجل دخولك";
 
-  // OTP Verification
-  static const String otpTitle = "أدخل رمز التحقق";
-  static const String otpSubtitle = "لقد أرسلنا رمز التحقق إلى رقم جوالك";
-  static const String verifyNow = "تحقق الآن";
+  // Hints
+  static const String nameHint = "أدخل اسمك الكامل";
+  static const String emailHint = "example@email.com";
+  static const String phoneHint = "05xxxxxxxxx";
+  static const String passwordHint = "••••••••";
 
-  // Forgot / Reset
-  static const String forgotTitle = "استعادة كلمة المرور";
-  static const String forgotSubtitle =
-      "أدخل بريدك الإلكتروني أو رقم الجوال لاستلام رمز التحقق";
-  static const String contactHint = "البريد الإلكتروني أو رقم الجوال";
-  static const String sendCode = "إرسال رمز";
-  static const String newPasswordHint = "كلمة المرور الجديدة";
-  static const String resetPasswordButton = "تعيين كلمة المرور";
+  // Bottom navigation
+  static const String home = "الرئيسية";
+  static const String myBookings = "حجوزاتي";
+  static const String profile = "الملف الشخصي";
 
-  // 🔹 Home Screen
-  static const String greetingTitle = "مرحباً عميلنا العزيز 👋";
-  static const String greetingSubtitle = "احجز خدمتك الآن بسرعة وسهولة";
+  // Home header
+  static const String welcome = "مرحباً";
+  static const String dearCustomer = "عميلنا العزيز";
+  static const String client = "عميل";
   static const String newBooking = "حجز جديد";
-  static const String preBooking = "حجز مسبق";
+  static const String previousBooking = "حجز مسبق";
+
+  // Services section
   static const String ourServices = "خدماتنا";
-  static const String viewAll = "عرض الكل";
-  static const String service1 = "غسيل خارجي";
-  static const String service2 = "غسيل داخلي";
-  static const String service3 = "تلميع كامل";
-  static const String service4 = "تنظيف المحرك";
+  static const String externalWash = "غسيل خارجي";
+  static const String internalWash = "غسيل داخلي";
+  static const String fullWash = "غسيل كامل";
+  static const String polish = "تلميع";
+
+  static const String externalPrice = "50 ر.س";
+  static const String internalPrice = "60 ر.س";
+  static const String fullPrice = "90 ر.س";
+  static const String polishPrice = "120 ر.س";
+
+  // Why us section
   static const String whyUs = "لماذا نحن؟";
-  static const String fast = "سريع";
-  static const String onTime = "خدمة في الموعد";
-  static const String trusted = "موثوق";
-  static const String proTeam = "فريق محترف";
-  static const String affordable = "أسعار مناسبة";
-  static const String goodValue = "قيمة مقابل الخدمة";
-
-  static const String newBookingTitle = "حجز جديد";
-  static const String selectService = "اختر الخدمة";
-  static const String selectDate = "اختر التاريخ";
-  static const String selectTime = "اختر الوقت";
-  static const String selectAddress = "الموقع";
-  static const String confirmBooking = "تأكيد الحجز";
-  static const String completeData = "من فضلك أكمل بيانات الحجز";
-  static const String dateFirst = "اختر التاريخ أولاً";
-  static const String bookedTime = "هذا الوقت محجوز مسبقًا، اختر وقت آخر";
-
-  // خدمات الغسيل
-  static const List<String> services = [
-    "غسيل خارجي",
-    "غسيل داخلي",
-    "تلميع كامل",
-    "تنظيف المحرك",
-  ];
-
-  static const bookingDetailsTitle = "تفاصيل الحجز";
-  static const undefinedService = "خدمة غير محددة";
-  static const appointment = "الموعد";
-  static const undefined = "غير محدد";
-  static const location = "الموقع";
-  static const defaultLocation = "شارع المثال 12";
-  static const price = "السعر";
-  static const defaultPrice = "70 EGP";
-  static const cancelBooking = "إلغاء الحجز";
-  static const rateService = "تقييم الخدمة";
-  static const bookingCancelled = "تم إلغاء الحجز بنجاح";
-  static const bookingStatusPending = "قيد الانتظار";
-  static const bookingStatusInProgress = "جاري التنفيذ";
-  static const bookingStatusCompleted = "مكتمل";
-  static const total= "الإجمالي";
-
-  //Payment
-  static const paymentTitle = "الدفع";
-  static const selectPaymentMethod = "اختر طريقة الدفع";
-  static const payOnService = "الدفع عند التنفيذ";
-  static const payByCard = "الدفع بواسطة البطاقة";
-  static const walletPayment = "المحفظة الإلكترونية";
-  static const confirmAndPay = "تأكيد والدفع";
-  static const successTitle = "نجاح";
-  static const paymentSuccess = "تم الدفع بنجاح";
-  static const okay = "حسناً";
-
-  // 🔹 My Bookings Screen
-  static const String myBookingsTitle = "حجوزاتي";
-  static const String myBookingsSubtitle = "سجل الحجوزات الخاصة بك:";
-
-  //pre booking
-  static const lastBookingTitle = "آخر حجز لك";
-  static const lastBookingDetails = "تفاصيل آخر حجز:";
-  static const showBookings = "عرض تفاصيل الحجوزات";
-  static const thankYou = "شكراً لاستخدامك Smart Clean";
-
-  // Rating
-  static const shareOpinion = "شاركنا رأيك";
-  static const writeNotes = "اكتب ملاحظاتك هنا...";
-  static const sendRating = "إرسال التقييم";
-  static const thanksForRating = "شكراً لتقييمك!";
-
-  // 🟣 Auth (User)
-  static const String login = "Login";
-  static const String register = "Register";
-  static const String username = "Username";
-
-  // 🧰 Worker/Admin Section
-  static const String workerLoginTitle = "Worker Login";
-  static const String ordersDashboard = "لوحة الطلبات";
-static const String orderDetails = "تفاصيل الطلب";
-static const String workerSchedule = "جدول العمل";
-
-
-  static const String startWashing = "Start Washing";
-  static const String completeOrder = "Complete Order";
-
-  // 🔔 Common Texts
-  static const String loading = "Loading...";
-  static const String success = "Success!";
-  static const String failed = "Failed!";
+  static const String mobileService = "خدمة متنقلة";
+  static const String mobileServiceDesc = "نأتي إليك أينما كنت";
+  static const String flexibleTimes = "مواعيد مرنة";
+  static const String flexibleTimesDesc = "اختر الوقت المناسب لك";
+  static const String highQuality = "جودة عالية";
+  static const String highQualityDesc = "فريق محترف ومعدات حديثة";
 }
